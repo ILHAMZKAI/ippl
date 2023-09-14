@@ -6,7 +6,7 @@
         <a class="navbar-brand m-0" href="{{ route('home') }}"
             target="_blank">
             <img src="./img/logo-ct-dark.png" class="navbar-brand-img h-100" alt="main_logo">
-            <span class="ms-1 font-weight-bold">Go Estate</span>
+            <span class="ms-2 font-weight-bold">GoEstate</span>
         </a>
     </div>
     <hr class="horizontal dark mt-0">

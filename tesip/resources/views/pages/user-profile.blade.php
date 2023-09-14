@@ -2,22 +2,19 @@
 
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Profil Anda'])
-    <div class="card shadow-lg mx-4 mt-3 card-profile-bottom">
-        <div class="card-body p-3">
-            <div class="row gx-4">
+    <div class="card shadow-lg mx-4 mt-1 card-profile-bottom">
+        <div class="card-body p-2 mb-n2">
+            <div class="row gx-3">
                 <div class="col-auto">
                     <div class="avatar avatar-xl position-relative">
-                        <img src="/img/team-1.jpg" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
+                        <img src="/img/team-1.jpg" alt="profile_image" class="w-100 rounded-circle shadow-sm">
                     </div>
                 </div>
-                <div class="col-auto my-auto mt-n4">
+                <div class="col-auto my-auto mt-n3">
                     <div class="h-100">
-                        <h5 class="mb-1">
+                        <h3 class="mb-1">
                             {{ auth()->user()->firstname ?? 'Nama depan' }} {{ auth()->user()->lastname ?? 'Nama belakang' }}
-                        </h5>
-                        <p class="mb-0 font-weight-bold text-sm">
-                            Gelar
-                        </p>
+                        </h3>
                     </div>
                 </div>
             </div>
