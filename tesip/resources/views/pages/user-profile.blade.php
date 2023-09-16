@@ -16,7 +16,7 @@
                             {{ auth()->user()->firstname ?? 'Nama depan' }} {{ auth()->user()->lastname ?? 'Nama belakang' }}
                         </h3>
                     </div>
-                </div>
+                </div> 
             </div>
         </div>
     </div>
