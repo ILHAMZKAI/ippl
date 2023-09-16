@@ -13,7 +13,7 @@
                 <div class="col-auto my-auto mt-n3">
                     <div class="h-100">
                         <h3 class="mb-1">
-                            {{ auth()->user()->firstname ?? 'Nama depan' }} {{ auth()->user()->lastname ?? 'Nama belakang' }}
+                        <img src="{{ asset('storage/user_images/' . auth()->user()->gambar) }}"sm-2>{{ auth()->user()->firstname ?? '' }} {{ auth()->user()->lastname ?? '' }}
                         </h3>
                     </div>
                 </div> 
@@ -62,6 +62,11 @@
                                         <input class="form-control" type="text" name="lastname" value="{{ old('lastname', auth()->user()->lastname) }}">
                                     </div>
                                 </div>
+                                <div class="mb-2">
+                                    <label for="gambar" class="form-label">Foto Profil</label>
+                                    <img class="img-preview img-fluid mb-3 col-sm-4">
+                                    <input class="form-control" type="file" id="gambar" name="gambar" onchange="previewImage()">
+                                </div>
                             </div>
                             <hr class="horizontal dark">
                             <p class="text-uppercase text-sm">Informasi Kontak</p>
@@ -109,4 +114,19 @@
             </div>
         </div>
     </div>
+    <script>
+        function previewImage(){
+            const image = document.querySelector('#gambar');
+            const imgPreview = document.querySelector('.img-preview');
+
+            imgPreview.style.display = 'block';
+
+            const oFReader = new FileReader();
+            oFReader.readAsDataURL(image.files[0]);
+
+            oFReader.onload = function(oFREvent){
+                imgPreview.src = oFREvent.target.result;
+            }
+        }
+    </script>
 @endsection
