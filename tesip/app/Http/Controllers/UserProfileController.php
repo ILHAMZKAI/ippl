@@ -5,12 +5,25 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Http\Controllers\UserProfileController;
 
 class UserProfileController extends Controller
 {
     public function show()
     {
         return view('pages.user-profile');
+    }
+
+    public function deleteImage()
+    {
+        $user = auth()->user();
+        if ($user->gambar) {
+            $path = 'user_images/' . $user->gambar;
+            Storage::delete('public/user_images/' . $user->gambar);
+            $user->update(['gambar' => '']); // Atau gunakan nilai lain yang sesuai
+            return back()->with('error', 'Gambar profil berhasil dihapus');
+        }
+        return back()->with('error', 'Tidak ada gambar profil');
     }
 
     public function update(Request $request)
@@ -27,9 +40,7 @@ class UserProfileController extends Controller
             'postal' => ['max:100'],
             'about' => ['max:255']
         ]);
-
-        $user = auth()->user();
-
+        
         auth()->user()->update([
             'username' => $request->get('username'),
             'firstname' => $request->get('firstname'),
@@ -43,16 +54,24 @@ class UserProfileController extends Controller
         ]);
 
         if ($request->hasFile('gambar')) {
-            $gambar = $request->file('gambar');
-            $gambarName = time() . '.' . $gambar->getClientOriginalExtension();
-            $gambar->storeAs('/user_images', $gambarName);
-    
+            $user = auth()->user();
+            
+            // Get the uploaded file
+            $file = $request->file('gambar');
+            
+            // Generate a unique filename
+            $gambarName = time() . '.' . $file->getClientOriginalExtension();
+            
+            // Store the file in the public/user_images directory
+            $file->storeAs('public/user_images', $gambarName);
+            
+            // Delete the old image if it exists
             if ($user->gambar) {
-                Storage::delete('user_images/' . $user->gambar);
+                Storage::delete('public/user_images/' . $user->gambar);
             }
-
             $user->update(['gambar' => $gambarName]);
         }
+        
         
         return back()->with('succes', 'Profil sukses diperbarui');
     }
