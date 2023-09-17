@@ -41,7 +41,7 @@ class UserProfileController extends Controller
             'about' => ['max:255']
         ]);
         
-        auth()->user()->update([
+        auth()->user()->update([ 
             'username' => $request->get('username'),
             'firstname' => $request->get('firstname'),
             'lastname' => $request->get('lastname'),
