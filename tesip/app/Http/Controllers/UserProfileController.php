@@ -40,6 +40,8 @@ class UserProfileController extends Controller
             'postal' => ['max:100'],
             'about' => ['max:255']
         ]);
+
+        $user = auth()->user();
         
         auth()->user()->update([ 
             'username' => $request->get('username'),
