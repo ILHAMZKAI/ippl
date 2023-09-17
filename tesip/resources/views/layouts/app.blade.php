@@ -32,7 +32,7 @@
             @yield('content')
         @else
             @if (!in_array(request()->route()->getName(), ['profile', 'profile-static']))
-                <div class="height-300 bg-primary position-absolute w-100" style="background-image: url('https://github.com/ILHAMZKAI/ippl/blob/main/background/bg100.jpg?raw=true'); background-position-y: 50%;"></div>
+                <div class="height-600 bg-primary position-absolute w-100" style="background-image: url('https://github.com/ILHAMZKAI/ippl/blob/main/background/bg102.jpg?raw=true'); background-position-y: 80%;"></div>
             @elseif (in_array(request()->route()->getName(), ['profile-static', 'profile']))
                 <div class="position-absolute w-100 min-height-400 top-0" style="background-image: url('https://github.com/ILHAMZKAI/ippl/blob/main/background/bg100.jpg?raw=true'); background-position-y: 50%;">
                     <span class="mask bg-primary opacity-5"></span>
