@@ -30,7 +30,7 @@
                                     @error('username') <p class='text-danger text-xs pt-1'> {{ $message }} </p> @enderror
                                 </div>
                                 <div class="flex flex-col mb-3">
-                                    <input type="email" name="email" class="form-control" placeholder="Email" aria-label="Email" value="{{ old('email') }}" >
+                                    <input type="email" name="email" id = "email" class="form-control" placeholder="Email" aria-label="Email" value="{{ old('email') }}" required>
                                     @error('email') <p class='text-danger text-xs pt-1'> {{ $message }} </p> @enderror
                                 </div>
                                 <div class="flex flex-col mb-3">
@@ -45,7 +45,7 @@
                                     @error('terms') <p class='text-danger text-xs'> {{ $message }} </p> @enderror
                                 </div>
                                 <div class="text-center">
-                                    <button type="submit" class="btn bg-gradient-dark w-100 my-4 mb-0">Daftar</button>
+                                    <button type="submit" class="btn bg-gradient-dark w-100 my-2 mb-0">Daftar</button> <!--href="{{url('send_email',$email)}}"-->
                                 </div>
                                 <p class="text-sm mt-3 mb-0">Sudah memiliki akun? <a href="{{ route('login') }}"
                                         class="text-dark font-weight-bolder">Masuk</a></p>

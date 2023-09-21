@@ -52,7 +52,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Alamat Email</label>
+                                        <label for="example-text-input" class="form-control-label">Alamat email</label>
                                         <input class="form-control" type="email" name="email" value="{{ old('email', auth()->user()->email) }}">
                                     </div>
                                 </div>
@@ -69,7 +69,7 @@
                                     </div>
                                 </div>
                                 <div class="mb-2">
-                                    <label for="gambar" class="form-label">Foto Profil (Persegi)</label>
+                                    <label for="gambar" class="form-label">Ganti foto profil</label>
                                     <img class="img-preview img-fluid mb-3 col-sm-4">
                                     <input class="form-control" type="file" id="gambar" name="gambar" onchange="previewImage()">
                                 </div>

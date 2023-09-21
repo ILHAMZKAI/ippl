@@ -55,6 +55,6 @@
             </div>
         </div>
         <a href="https://wa.me/085705557672" target="https://wa.me/085705557672"
-            class="btn btn-dark btn-sm w-101 mb-0 mx-13">Hubungi kami</a>
+            class="btn btn-dark btn-sm w-102 mb-0 mx-13">Hubungi kami</a>
         </div>
 </aside>

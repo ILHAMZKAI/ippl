@@ -20,7 +20,7 @@ class UserProfileController extends Controller
         if ($user->gambar) {
             $path = 'user_images/' . $user->gambar;
             Storage::delete('public/user_images/' . $user->gambar);
-            $user->update(['gambar' => '']); // Atau gunakan nilai lain yang sesuai
+            $user->update(['gambar' => '']);
             return back()->with('error', 'Gambar profil berhasil dihapus');
         }
         return back()->with('error', 'Tidak ada gambar profil');
@@ -57,24 +57,14 @@ class UserProfileController extends Controller
 
         if ($request->hasFile('gambar')) {
             $user = auth()->user();
-            
-            // Get the uploaded file
             $file = $request->file('gambar');
-            
-            // Generate a unique filename
             $gambarName = time() . '.' . $file->getClientOriginalExtension();
-            
-            // Store the file in the public/user_images directory
-            $file->storeAs('public/user_images', $gambarName);
-            
-            // Delete the old image if it exists
+            $file->storeAs('public/user_images', $gambarName);            
             if ($user->gambar) {
                 Storage::delete('public/user_images/' . $user->gambar);
             }
             $user->update(['gambar' => $gambarName]);
         }
-        
-        
         return back()->with('succes', 'Profil sukses diperbarui');
     }
 }
