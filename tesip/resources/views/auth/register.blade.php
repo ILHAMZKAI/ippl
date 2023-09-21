@@ -4,7 +4,7 @@
     @include('layouts.navbars.guest.navbar')
     <main class="main-content">
         <div class="page-header align-items-start min-vh-50 pt-5 pb-4 m-2 border-radius-lg"
-            style="background-image: url('https://github.com/ILHAMZKAI/ippl/blob/main/regis/estes-blacklist-international-wallpaper-hd.jpg?raw=true'); background-position: top;">
+            style="background-image: url('https://github.com/ILHAMZKAI/ippl/blob/main/regis/bg109.jpg?raw=true'); background-position: 70;">
             <span class="mask bg-gradient-dark opacity-6"></span>
             <div class="container">
                 <div class="row justify-content-center">
