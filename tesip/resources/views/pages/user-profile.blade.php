@@ -2,12 +2,11 @@
 
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Profil Anda'])
-    <div class="card shadow-lg mx-4 mt-1 card-profile-bottom">
+    <div class="card shadow-lg mx-4-1 mt-0 card-profile-bottom">
         <div class="card-body p-2 mb-n2">
             <div class="row gx-1">
-                <div class="col-auto">
+                <div class="col-auto mx-1">
                     <div class=" avatar-xl position-relative">
-                        <!-- <img src="/img/team-1.jpg" alt="profile_image" class="w-100 rounded-circle shadow-sm"> -->
                         <img src="{{ asset('storage/user_images/' . auth()->user()->gambar) }}" width="65" height="65" class="w-101 h-101 rounded-circle shadow-sm" >
                     </div>
                 </div>
@@ -18,7 +17,7 @@
                                 {{ auth()->user()->firstname ?? '' }} {{ auth()->user()->lastname ?? '' }}
                                 @csrf
                                 @method('POST')
-                                <button type="submit" class="btn btn-danger ms-2 mx-8 mt-2">Hapus Profil</button>
+                                <button type="submit" class="btn btn-danger ms-4 mx-auto mt-2">Hapus Profil</button>
                             </h3>
                         </form>
                     </div>
@@ -32,7 +31,7 @@
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-md-7">
-                <div class="card">
+                <div class="card mx-3">
                     <form role="form" method="POST" action={{ route('profile.update') }} enctype="multipart/form-data">
                         @csrf
                         <div class="card-header-0 pb-0">

@@ -12,6 +12,10 @@ use Illuminate\Queue\SerializesModels;
 class SendEmail extends Mailable
 {
     use Queueable, SerializesModels;
+    public function build()
+{
+    return $this->view('emails.welcome');
+}
 
     /**
      * Create a new message instance.

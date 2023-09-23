@@ -39,14 +39,13 @@
                                 </div>
                                 <div class="form-check form-check-info text-start">
                                     <input class="form-check-input" type="checkbox" name="terms" id="flexCheckDefault" >
-                                    <label class="form-check-label"> <!--for="flexCheckDefault"-->
+                                    <label class="form-check-label" for="flexCheckDefault">
                                         Saya menyetujui <a href="javascript:;" class="text-dark font-weight-bolder">Syarat dan Ketentuan</a>
                                     </label>
                                     @error('terms') <p class='text-danger text-xs'> {{ $message }} </p> @enderror
                                 </div>
                                 <div class="text-center">
                                     <button type="submit" class="btn bg-gradient-dark w-100 my-2 mb-0">Daftar</button>
-                                    <!--href="{{url('send_email')}}"-->
                                 </div>
                                 <p class="text-sm mt-3 mb-0">Sudah memiliki akun? <a href="{{ route('login') }}"
                                         class="text-dark font-weight-bolder">Masuk</a></p>
