@@ -29,10 +29,10 @@ class UserProfileController extends Controller
     public function update(Request $request)
     {
         $attributes = $request->validate([
-            'username' => ['required','max:255', 'min:2'],
+            'username' => ['required', 'max:255', 'min:2'],
             'firstname' => ['max:100'],
             'lastname' => ['max:100'],
-            'email' => ['required', 'email', 'max:255',  Rule::unique('users')->ignore(auth()->user()->id),],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore(auth()->user()->id),],
             'address' => ['max:100'],
             'gambar' => ['image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
             'city' => ['max:100'],
@@ -42,8 +42,8 @@ class UserProfileController extends Controller
         ]);
 
         $user = auth()->user();
-        
-        auth()->user()->update([ 
+
+        auth()->user()->update([
             'username' => $request->get('username'),
             'firstname' => $request->get('firstname'),
             'lastname' => $request->get('lastname'),
@@ -59,7 +59,7 @@ class UserProfileController extends Controller
             $user = auth()->user();
             $file = $request->file('gambar');
             $gambarName = time() . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('public/user_images', $gambarName);            
+            $file->storeAs('public/user_images', $gambarName);
             if ($user->gambar) {
                 Storage::delete('public/user_images/' . $user->gambar);
             }
