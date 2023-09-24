@@ -23,9 +23,7 @@
                                     }
                                     .dark {
                                         background-color: #769656; /* Warna sel gelap */
-                                    }
-                                    .light {
-                                        background-color: #eeeed2; /* Warna sel terang */
+                                        background-color: #0000; /* Warna sel terang */
                                     }
                                     </style>
                                     </head>
