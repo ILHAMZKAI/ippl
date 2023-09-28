@@ -1,16 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.appad', ['class' => 'g-sidenav-show bg-gray-100'])
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-
-<body>
-    <h1> ini Admin page </h1>
-
-</body>
-
-</html>
+@section('content')
+    @include('layouts.navbars.auth.topnavad', ['title' => 'Manajemen Admin'])
+    <div class="row mx-4 me-4-1">
+        <div class="col-12 mx-1">
+            <div class="alert1 alert-light"><strong>Pengguna GoEstate</strong>
+            </div>
+        </div>
+    </div>
+@endsection
