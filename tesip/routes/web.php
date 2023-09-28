@@ -17,10 +17,13 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\ResetPassword;
 use App\Http\Controllers\ChangePassword;
+use App\Http\Controllers\GardenManagementController;
 
-
+Route::get('/garden-management', [GardenManagementController::class, 'index'])->name('garden-management');
+Route::post('/update-garden-management', [GardenManagementController::class, 'update'])->name('update-garden-management');
 Route::get('/', function () {
-	return redirect('/dashboard'); })->middleware('auth');
+	return redirect('/dashboard');
+})->middleware('auth');
 Route::get('/register', [RegisterController::class, 'create'])->middleware('guest')->name('register');
 Route::post('/register', [RegisterController::class, 'store'])->middleware('guest')->name('register.perform');
 Route::get('/login', [LoginController::class, 'show'])->middleware('guest')->name('login');
