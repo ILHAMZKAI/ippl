@@ -17,10 +17,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\ResetPassword;
 use App\Http\Controllers\ChangePassword;
-use App\Http\Controllers\GardenManagementController;
 
-Route::get('/garden-management', [GardenManagementController::class, 'index'])->name('garden-management');
-Route::post('/update-garden-management', [GardenManagementController::class, 'update'])->name('update-garden-management');
 Route::get('/', function () {
 	return redirect('/dashboard');
 })->middleware('auth');

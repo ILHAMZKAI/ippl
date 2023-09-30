@@ -83,7 +83,7 @@ body {
   color: var(--bs-body-color);
   text-align: var(--bs-body-text-align);
   background-color: var(--bs-body-bg);
-  -webkit-text-size-adjust: 100%;
+  /* -webkit-text-size-adjust: 100%; */
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
@@ -349,7 +349,7 @@ caption {
 
 th {
   text-align: inherit;
-  text-align: -webkit-match-parent;
+  /* text-align: -webkit-match-parent; */
 }
 
 thead,
@@ -2464,7 +2464,7 @@ progress {
   --bs-table-hover-color: #67748e;
   --bs-table-hover-bg: rgba(0, 0, 0, 0.075);
   width: 100%;
-  margin-bottom: 1rem;
+  margin-bottom: -2rem;
   color: #67748e;
   vertical-align: top;
   border-color: #e9ecef;
@@ -3133,6 +3133,29 @@ textarea.form-control-lg {
   margin-right: 1rem;
 }
 
+.table-container {
+  position: relative;
+  width: 100%;
+  padding-top: 50%;
+  overflow: hidden;
+}
+
+.table {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse;
+}
+
+.cell {
+  border: 3px solid black;
+  padding: 8px;
+  text-align: center;
+  background-color: white;
+}
+
 .btn-check {
   position: absolute;
   clip: rect(0, 0, 0, 0);
@@ -3649,26 +3672,6 @@ textarea.form-control.is-invalid {
   z-index: 3;
 }
 
-.btn1 {
-  display: inline-block;
-  font-weight: 700;
-  line-height: 1.5;
-  color: #67748e;
-  text-align: center;
-  vertical-align: middle;
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  background-color: transparent;
-  border: 1px solid transparent;
-  padding: 0.625rem 1.25rem;
-  font-size: 0.875rem;
-  border-radius: 0.5rem;
-  transition: all 0.15s ease-in;
-}
-
 .btn {
   display: inline-block;
   font-weight: 700;
@@ -3774,7 +3777,7 @@ fieldset:disabled .btn {
   color: #000;
   background-color: #96a2b8;
   border-color: #8f9db3;
-  box-shadow: 0 0 0 0.2rem rgba(111, 124, 145, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
 }
 
 .btn-check:checked+.btn-secondary,
@@ -3819,7 +3822,7 @@ fieldset:disabled .btn {
   color: #000;
   background-color: #4dd59b;
   border-color: #42d395;
-  box-shadow: 0 0 0 0.2rem rgba(38, 175, 116, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
 }
 
 .btn-check:checked+.btn-success,
@@ -3937,11 +3940,25 @@ fieldset:disabled .btn {
   border-color: #18a100;
 }
 
-.btn-danger1 {
+.btn-gm1 {
   color: #ffffff;
-  background-color: #f5365c;
-  border-color: #f5365c;
+  background-color: #2dce89;
+  border-color: #2dce89;
   float: right;
+}
+
+.btn-gm1:hover {
+  color: #ffffff;
+  background-color: #4dd59b;
+  border-color: #42d395;
+}
+
+.btn-check:focus+.btn-gm1,
+.btn-gm1:focus {
+  color: #ffffff;
+  background-color: #4dd59b;
+  border-color: #4dd59b;
+  box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
 }
 
 .btn-danger {
@@ -3961,7 +3978,7 @@ fieldset:disabled .btn {
   color: #000;
   background-color: #f75474;
   border-color: #f64a6c;
-  box-shadow: 0 0 0 0.2rem rgba(208, 46, 78, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
 }
 
 .btn-check:checked+.btn-danger,
@@ -4006,7 +4023,7 @@ fieldset:disabled .btn {
   color: #000;
   background-color: #eceff1;
   border-color: #ebeef1;
-  box-shadow: 0 0 0 0.2rem rgba(198, 201, 203, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
 }
 
 .btn-check:checked+.btn-light,
@@ -5711,7 +5728,7 @@ fieldset:disabled .btn {
   flex-direction: column;
   min-width: 0;
   word-wrap: break-word;
-  background-color: #fff;
+  background-color: #CED4DA;
   background-clip: border-box;
   border: 0 solid rgba(0, 0, 0, 0.125);
   border-radius: 0.5rem;
@@ -20226,13 +20243,6 @@ fieldset:disabled .btn {
   text-transform: uppercase;
 }
 
-.btn1 {
-  margin-bottom: 0rem;
-  letter-spacing: -0.025rem;
-  text-transform: none;
-  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-}
-
 .btn {
   margin-bottom: 1rem;
   letter-spacing: -0.025rem;
@@ -20731,6 +20741,24 @@ fieldset:disabled .btn {
 .btn-success:hover,
 .btn.bg-gradient-success:hover {
   color: #fff;
+}
+
+.btn-yellow {
+  color: #000;
+  background-color: #FFFF00;
+}
+
+.btn-yellow:hover {
+  color: #000;
+  background-color: #FFFF00;
+}
+
+.btn-check:focus+.btn-yellow,
+.btn-yellow:focus {
+  color: #000;
+  background-color: #FFFF00;
+  border-color: #FFFF00;
+  box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
 }
 
 .btn-warning,
