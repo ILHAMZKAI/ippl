@@ -9544,6 +9544,10 @@ fieldset:disabled .btn {
   margin-left: 1.5rem !important;
 }
 
+.ms-4-1 {
+  margin-left: 1.75rem !important;
+}
+
 .ms-5 {
   margin-left: 3rem !important;
 }
@@ -26504,7 +26508,7 @@ span.flatpickr-weekday {
   webkit-transition: 0.3s ease 0s;
   -moz-transition: 0.3s ease 0s;
   -ms-transition: 0.3s ease 0s;
-  -o-transform: 0.3s ease 0s;
+  /* -o-transform: 0.3s ease 0s; */
   transition: 0.3s ease 0s;
 }
 
