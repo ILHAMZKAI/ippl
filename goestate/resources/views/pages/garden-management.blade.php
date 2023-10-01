@@ -10,6 +10,7 @@
         </div>
     </div>
 </div>
+
 <div class="row mx-4 me-4-1 ms-4-1" id="formLahan" style="display:none;">
     <div class="col-md-2">
         <div class="card px-8">
