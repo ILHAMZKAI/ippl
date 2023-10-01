@@ -3686,7 +3686,7 @@ textarea.form-control.is-invalid {
   user-select: none;
   background-color: transparent;
   border: 1px solid transparent;
-  padding: 0.625rem 1.25rem;
+  padding: 0.625rem 1.5rem;
   font-size: 0.875rem;
   border-radius: 0.5rem;
   transition: all 0.15s ease-in;
@@ -3723,16 +3723,16 @@ fieldset:disabled .btn {
 
 .btn-primary:hover {
   color: #000;
-  background-color: #ff0f0f;
-  border-color: #ff0f0f;
+  background-color: #18a100;
+  border-color: #18a100;
 }
 
 .btn-check:focus+.btn-primary,
 .btn-primary:focus {
   color: #000;
-  background-color: #ff0f0f;
-  border-color: #ff0f0f;
-  box-shadow: 0 0 0 0.2rem rgba(213, 84, 54, 0.5);
+  background-color: #18a100;
+  border-color: #18a100;
+  box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
 }
 
 .btn-check:checked+.btn-primary,
@@ -3741,8 +3741,8 @@ fieldset:disabled .btn {
 .btn-primary.active,
 .show>.btn-primary.dropdown-toggle {
   color: #000;
-  background-color: #fc8266;
-  border-color: #fb7353;
+  background-color: #18a100;
+  border-color: #18a100;
 }
 
 .btn-check:checked+.btn-primary:focus,
@@ -3750,7 +3750,7 @@ fieldset:disabled .btn {
 .btn-primary:active:focus,
 .btn-primary.active:focus,
 .show>.btn-primary.dropdown-toggle:focus {
-  box-shadow: 0 0 0 0.2rem rgba(213, 84, 54, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
 }
 
 .btn-primary:disabled,
@@ -4068,7 +4068,7 @@ fieldset:disabled .btn {
   color: #fff;
   background-color: #2c3c58;
   border-color: #2a3952;
-  box-shadow: 0 0 0 0.2rem rgba(82, 99, 126, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
 }
 
 .btn-check:checked+.btn-dark,
@@ -4154,7 +4154,7 @@ fieldset:disabled .btn {
 
 .btn-check:focus+.btn-outline-primary,
 .btn-outline-primary:focus {
-  box-shadow: 0 0 0 0.2rem rgba(251, 99, 64, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
 }
 
 .btn-check:checked+.btn-outline-primary,
@@ -4172,7 +4172,7 @@ fieldset:disabled .btn {
 .btn-outline-primary:active:focus,
 .btn-outline-primary.active:focus,
 .btn-outline-primary.dropdown-toggle.show:focus {
-  box-shadow: 0 0 0 0.2rem rgba(251, 99, 64, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
 }
 
 .btn-outline-primary:disabled,
@@ -9528,8 +9528,16 @@ fieldset:disabled .btn {
   margin-left: 0.5rem !important;
 }
 
+.ms-2-1 {
+  margin-left: 0.6rem !important;
+}
+
 .ms-3 {
   margin-left: 1rem !important;
+}
+
+.ms-3-1 {
+  margin-left: 0.60rem !important;
 }
 
 .ms-4 {
@@ -10013,6 +10021,16 @@ fieldset:disabled .btn {
   padding-left: 1.5rem !important;
 }
 
+.px-4-1 {
+  padding-right: 1.7rem !important;
+  padding-left: 1.75rem !important;
+}
+
+.px-4-2 {
+  padding-right: 1.4rem !important;
+  padding-left: 1.4rem !important;
+}
+
 .px-5 {
   padding-right: 3rem !important;
   padding-left: 3rem !important;
@@ -10300,6 +10318,10 @@ fieldset:disabled .btn {
 
 .ps-5 {
   padding-left: 3rem !important;
+}
+
+.ps-5-1 {
+  padding-left: 2.5rem !important;
 }
 
 .ps-6 {
