@@ -35,7 +35,7 @@
     <div class="height-600 bg-primary position-absolute w-100" style="background-image: url('/img/bg102.jpg'); background-size: 100%; background-position-y: 80%;"></div>
     @elseif (in_array(request()->route()->getName(), ['profile-static', 'profile']))
     <div class="position-absolute w-100 min-height-500 top-0" style="background-image: url('/img/bg100.jpg'); background-size: 100%; background-position-y: 35%;">
-        <span class="mask bg-primary opacity-5"></span>
+        <span class="mask bg-primary opacity-3"></span>
     </div>
     @endif
     @include('layouts.navbars.auth.sidenav')

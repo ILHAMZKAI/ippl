@@ -36,12 +36,12 @@
                     @csrf
                     <div class="card-header-0 pb-0">
                         <div class="d-flex align-items-center">
-                            <p class="mb-0 mx-4 me-xxl-4">Ubah Profil</p>
+                            <p class="mb-0 mx-4 me-xxl-4 text-bold text-dark">Ubah Profil</p>
                             <button type="submit" class="btn btn-success btn-sm mt-3 ms-auto me-auto">Simpan</button>
                         </div>
                     </div>
                     <div class="card-body">
-                        <p class="text-uppercase text-sm">Informasi Pengguna</p>
+                        <p class="text-uppercase text-bold text-dark">Informasi Pengguna</p>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -74,7 +74,7 @@
                             </div>
                         </div>
                         <hr class="horizontal dark">
-                        <p class="text-uppercase text-sm">Informasi Kontak</p>
+                        <p class="text-uppercase text-bold text-dark">Informasi Kontak</p>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
@@ -102,7 +102,7 @@
                             </div>
                         </div>
                         <hr class="horizontal dark">
-                        <p class="text-uppercase text-sm">Tentang</p>
+                        <p class="text-uppercase text-bold text-dark">Tentang</p>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
