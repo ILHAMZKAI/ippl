@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -29,7 +30,7 @@ Route::get('/reset-password', [ResetPassword::class, 'show'])->middleware('guest
 Route::post('/reset-password', [ResetPassword::class, 'send'])->middleware('guest')->name('reset.perform');
 Route::get('/change-password', [ChangePassword::class, 'show'])->middleware('guest')->name('change-password');
 Route::post('/change-password', [ChangePassword::class, 'update'])->middleware('guest')->name('change.perform');
-Route::get('/dashboard', [HomeController::class, 'index'])->name('home')->middleware('auth');
+Route::get('/dashboard', [HomeController::class, 'index'])->name('home')->middleware('auth', 'verified');
 Route::post('/user-profile/delete-image', [UserProfileController::class, 'deleteImage'])->name('user-profile.delete-image');
 // Route::get('send_email',[RegisterController::class, 'email'])->middleware('guest')->name('register.perform');
 Route::group(['middleware' => 'auth'], function () {
