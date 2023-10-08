@@ -32,7 +32,6 @@ Route::get('/change-password', [ChangePassword::class, 'show'])->middleware('gue
 Route::post('/change-password', [ChangePassword::class, 'update'])->middleware('guest')->name('change.perform');
 Route::get('/dashboard', [HomeController::class, 'index'])->name('home')->middleware('auth', 'verified');
 Route::post('/user-profile/delete-image', [UserProfileController::class, 'deleteImage'])->name('user-profile.delete-image');
-// Route::get('send_email',[RegisterController::class, 'email'])->middleware('guest')->name('register.perform');
 Route::group(['middleware' => 'auth'], function () {
 	Route::get('/virtual-reality', [PageController::class, 'vr'])->name('virtual-reality');
 	Route::get('/rtl', [PageController::class, 'rtl'])->name('rtl');
