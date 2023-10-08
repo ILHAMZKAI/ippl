@@ -39,9 +39,9 @@
         </ul>
     </div>
     <div class="sidenav-footer">
-        <div class="card card-plain shadow-none" id="sidenavCard">
-            <img class="w-50 mx-auto" src="/img/illustrations/icon-documentation-warning.svg" alt="sidebar_illustration">
-            <div class="card-body text-center p-3 w-100 pt-0 mt-n4">
+        <div class="card card-plain shadow-none mt-n4" id="sidenavCard">
+            <img class="w-40 mx-auto" src="/img/illustrations/icon-documentation-warning.png" alt="sidebar_illustration">
+            <div class="card-body text-center p-3 w-100 pt-0 mt-n2">
                 <div class="docs-info">
                     <h6 class="mb-0">Butuh bantuan? Atau saran dari Anda untuk kami</h6>
                     <p class="text-xs font-weight-bold mb-n1 mt-1">Klik tombol dibawah</p>
