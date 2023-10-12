@@ -5734,6 +5734,18 @@ fieldset:disabled .btn {
   border-radius: 0.5rem;
 }
 
+.card1 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #d1dae6;
+  background-clip: border-box;
+  border: 0 solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.5rem;
+}
+
 .card>hr {
   margin-right: 0;
   margin-left: 0;
@@ -9548,6 +9560,10 @@ fieldset:disabled .btn {
   margin-left: 1.75rem !important;
 }
 
+.ms-4-2 {
+  margin-left: 2.5rem !important;
+}
+
 .ms-5 {
   margin-left: 3rem !important;
 }
@@ -9816,6 +9832,10 @@ fieldset:disabled .btn {
   margin-right: -1rem !important;
 }
 
+.me-n3-1 {
+  margin-right: -1.1rem !important;
+}
+
 .me-n4 {
   margin-right: -1.5rem !important;
 }
@@ -9914,6 +9934,10 @@ fieldset:disabled .btn {
 
 .ms-n4 {
   margin-left: -1.5rem !important;
+}
+
+.ms-n4-1 {
+  margin-left: -2rem !important;
 }
 
 .ms-n5 {
@@ -10354,6 +10378,10 @@ fieldset:disabled .btn {
 
 .ps-12 {
   padding-left: 16rem !important;
+}
+
+.ps-n1 {
+  padding-left: -8rem !important;
 }
 
 .font-monospace {
@@ -20115,7 +20143,7 @@ fieldset:disabled .btn {
 }
 
 .alert-light {
-  background-image: linear-gradient(310deg, #CED4DA 0%, #d1dae6 100%);
+  background-image: linear-gradient(310deg, #d1dae6 0%, #d1dae6 100%);
 }
 
 .alert-dark {

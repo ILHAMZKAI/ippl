@@ -4,7 +4,7 @@
 @include('layouts.navbars.auth.topnav', ['title' => 'Manajemen Kebun'])
 <div class="row mx-4 me-4-1">
     <div class="col-12 mx-1">
-        <div class="alert1 alert-light"><strong>Lahan Kebun</strong>
+        <div class="alert1 alert-light"><strong>Perkebunan</strong>
             <button class="btn btn-gm1 ms-0 mx-auto mt-n2" onclick="konfirmasiHapus()">Hapus</button>
             <button class="btn btn-gm1 ms-0 mx-3 mt-n2">Simpan</button>
             <button class="btn btn-gm1 ms-0 mx-3 mt-n2" id="tambahLahanButton">Tambah Lahan</button>
@@ -74,7 +74,6 @@
     var isMerahAktif = false;
     var isHijauAktif = false;
     var isKuningAktif = false;
-    var isHapusAktif = false;
 
     function buatCard(namaLahan, jumlahBaris, jumlahKolom) {
         var containerCounter = 1;
@@ -84,38 +83,59 @@
         var cardId = "" + cardCounter;
         tabelLahanDiv.id = cardId;
         tabelLahanDiv.innerHTML = `
-            <div class="col-md-8 mx-4-1">
-                <div class="card mb-3">
-                    <div class="card-body px-4 py-4">
-                        <div id="namaLahanDiv${cardCounter}"></div>
-                        <div id="idLahanDiv${cardCounter}"></div>
-                        <div class="table-container">
-                            <table class="table">
-                                <tbody id="tableBody${cardCounter}">
-                                </tbody>
-                            </table>
+        <div class="col-11 ms-4-2">
+        <div class="alert1 alert-light me-n3-1" onclick="toggleElements(${cardCounter})">
+        <div class="row">
+            <div class="col-md mb-n2">
+                <div id="namaLahanDiv${cardCounter}"></div>
+            </div>
+            <div class="col-md mb-n2">
+                <div id="idLahanDiv${cardCounter}"></div>
+            </div>
+        </div>
+        </div>
+        <div class="content col-md-12 pt-2" id="content${cardCounter}" style="display: none;">
+        <div class="card1 me-n3-1 mt-n4 mb-4">
+            <div class="card-body ms-n4-1 mb-n2">
+                <div class="row">
+                    <div class="col-md-8 mx-4-1">
+                        <div class="card mb-3">
+                            <div class="card-body px-4 py-4">
+                                <div class="table-container">
+                                    <table class="table">
+                                        <tbody id="tableBody${cardCounter}">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 ms-n5">
+                        <div class="card px-8" me-n4>
+                            <div class="card-body mx-n8 mb-n3">
+                                <div>
+                                    <button class="btn btn-danger pe-5 ms-n1" onclick="ubahWarna('red')">Merah</button>
+                                    <button class="btn btn-primary ms-2-1 px-4-2"
+                                        onclick="ubahWarna('green')">Hijau</button>
+                                </div>
+                                <div>
+                                    <button class="btn btn-yellow ms-n1 px-4"
+                                        onclick="ubahWarna('yellow')">Kuning</button>
+                                    <button class="btn btn-dark ms-3-1 ps-5-1" onclick="resetWarna()">Reset</button>
+                                </div>
+                                <div>
+                                    <button class="btn btn-light pe-5 ms-n1"
+                                        onclick="hapusWarna('white')">Hapus</button>
+                                    <button class="btn btn-secondary ms-2-1 px-4-1">Info</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-2 ms-n5">
-                <div class="card px-8" me-n4>
-                    <div class="card-body mx-n8 mb-n3">
-                        <div>
-                            <button class="btn btn-danger pe-5 ms-n1" onclick="ubahWarna('red')">Merah</button>
-                            <button class="btn btn-primary ms-2-1 px-4-2" onclick="ubahWarna('green')">Hijau</button>
-                        </div>
-                        <div>
-                            <button class="btn btn-yellow ms-n1 px-4" onclick="ubahWarna('yellow')">Kuning</button>
-                            <button class="btn btn-dark ms-3-1 ps-5-1" onclick="resetWarna()">Reset</button>
-                        </div>
-                        <div>
-                            <button class="btn btn-light pe-5 ms-n1" onclick="hapusWarna('white')">Hapus</button>
-                            <button class="btn btn-secondary ms-2-1 px-4-1">Info</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        </div>
+        </div>
+        </div>
         `;
         tabelLahanContainer.appendChild(tabelLahanDiv);
 
@@ -165,17 +185,18 @@
                         inputAngka.className = "numeric-input";
                         inputAngka.id = `inputAngka${counter}-${row}-${col}`;
                         inputAngka.style.border = "none";
-                        inputAngka.style.padding = "0";
-                        inputAngka.style.margin = "0";
                         inputAngka.style.background = "none";
+                        inputAngka.style.paddingBottom = "4";
+                        inputAngka.style.margin = "0";
                         inputAngka.style.outline = "none";
                         inputAngka.style.textAlign = "center";
                         inputAngka.style.width = "80%";
                         inputAngka.style.height = "100%";
-                        inputAngka.style.color = "#008B8B";
+                        inputAngka.style.color = "#000";
+                        inputAngka.style.fontWeight = "bold";
 
                         inputAngka.addEventListener("input", function() {
-                            if (this.value.length > 10) {
+                            if (this.value.length > 8) {
                                 this.value = this.value.slice(0, 10);
                             }
                         });
@@ -210,9 +231,15 @@
     }
 
     function resetWarna() {
-        var sel = document.getElementsByClassName("cell");
-        for (var i = 0; i < sel.length; i++) {
-            sel[i].style.backgroundColor = "white";
+        var button = event.target;
+        var table = button.closest('.content');
+        if (table) {
+            var cells = table.getElementsByClassName("cell");
+            if (confirm("Apakah Anda yakin ingin mereset data warna?")) {
+                for (var i = 0; i < cells.length; i++) {
+                    cells[i].style.backgroundColor = "white";
+                }
+            }
         }
     }
 
@@ -274,19 +301,20 @@
                                 var inputAngka = document.createElement("input");
                                 inputAngka.type = "text";
                                 inputAngka.className = "numeric-input";
-                                inputAngka.id = `inputAngka${inputIdLahan}-${row}-${col}`;
+                                inputAngka.id = `inputAngka${counter}-${row}-${col}`;
                                 inputAngka.style.border = "none";
-                                inputAngka.style.padding = "0";
-                                inputAngka.style.margin = "0";
                                 inputAngka.style.background = "none";
+                                inputAngka.style.paddingBottom = "4";
+                                inputAngka.style.margin = "0";
                                 inputAngka.style.outline = "none";
                                 inputAngka.style.textAlign = "center";
                                 inputAngka.style.width = "80%";
                                 inputAngka.style.height = "100%";
-                                inputAngka.style.color = "#008B8B";
+                                inputAngka.style.color = "#000";
+                                inputAngka.style.fontWeight = "bold";
 
                                 inputAngka.addEventListener("input", function() {
-                                    if (this.value.length > 10) {
+                                    if (this.value.length > 8) {
                                         this.value = this.value.slice(0, 10);
                                     }
                                 });
@@ -362,8 +390,17 @@
             buatCard(namaLahan, jumlahBaris, jumlahKolom);
             document.getElementById("formLahan").style.display = "none";
         } else {
-            alert("Harap masukkan nilai yang valid untuk baris (maksimum 16) dan kolom (maksimum 26).");
+            alert("Harap masukkan nilai yang valid untuk baris (maksimum 16) dan kolom (maksimum 26)");
         }
     });
+
+    function toggleElements(cardCounter) {
+        var content = document.getElementById(`content${cardCounter}`);
+        if (content.style.display === "none" || content.style.display === "") {
+            content.style.display = "block";
+        } else {
+            content.style.display = "none";
+        }
+    }
 </script>
 @endsection
