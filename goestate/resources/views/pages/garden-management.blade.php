@@ -74,6 +74,92 @@
     var isMerahAktif = false;
     var isHijauAktif = false;
     var isKuningAktif = false;
+    var selectedCells = new Map();
+
+    function setTimer() {
+        var dateAndActionPicker = document.getElementById('dateAndActionPicker');
+        dateAndActionPicker.style.display = 'block';
+    }
+
+    function confirmDateTimeAction() {
+        var dateTimePicker = document.getElementById('dateTimePicker');
+        var actionPicker = document.getElementById('actionPicker');
+
+        if (!dateTimePicker.value) {
+            alert('Pilih waktu dan tanggal terlebih dahulu');
+            return;
+        }
+
+        if (selectedCells.size === 0) {
+            alert('Pilih satu atau lebih kolom terlebih dahulu');
+            return;
+        }
+
+        var selectedDateTime = new Date(dateTimePicker.value);
+        var action = actionPicker.value;
+
+        selectedCells.forEach(function(selectedCell) {
+            if (selectedCell.getAttribute('data-timer-set') === 'true') {
+                if (confirm('Waktu sudah diterapkan disini. Apakah anda ingin mengubahnya?')) {
+                    resetCellTimer(selectedCell);
+                } else {
+                    return;
+                }
+            }
+
+            originalText = selectedCell.textContent;
+
+            if (selectedCell.getAttribute('data-timer')) {
+                clearTimeout(selectedCell.getAttribute('data-timer'));
+            }
+
+            if (action === 'Fertilization') {
+                selectedCell.style.backgroundColor = 'red';
+                var timer = setTimeout(function() {
+                    selectedCell.style.backgroundColor = 'yellow';
+                    selectedCell.setAttribute('data-timer-set', 'true');
+                    selectedCell.textContent = originalText;
+                }, selectedDateTime - new Date());
+                selectedCell.setAttribute('data-timer', timer);
+            } else if (action === 'Harvest') {
+                selectedCell.style.backgroundColor = 'red';
+                var timer = setTimeout(function() {
+                    selectedCell.style.backgroundColor = 'green';
+                    selectedCell.setAttribute('data-timer-set', 'true');
+                    selectedCell.textContent = originalText;
+                }, selectedDateTime - new Date());
+                selectedCell.setAttribute('data-timer', timer);
+            }
+
+            selectedCell.textContent = selectedDateTime.toLocaleString();
+        });
+
+        var dateAndActionPicker = document.getElementById('dateAndActionPicker');
+        dateAndActionPicker.style.display = 'none';
+
+        selectedCells.clear();
+    }
+
+    function selectCell(cell) {
+        if (selectedCells.has(cell)) {
+            selectedCells.delete(cell);
+            resetCellTimer(cell);
+        } else {
+            selectedCells.set(cell, cell);
+            setTimer();
+        }
+    }
+
+    function resetCellTimer(cell) {
+        if (cell.getAttribute('data-timer')) {
+            clearTimeout(cell.getAttribute('data-timer'));
+        }
+        cell.removeAttribute('data-timer');
+        cell.removeAttribute('data-timer-set');
+        cell.style.backgroundColor = 'white';
+        cell.textContent = originalText;
+    }
+
 
     function buatCard(namaLahan, jumlahBaris, jumlahKolom) {
         var containerCounter = 1;
@@ -84,7 +170,7 @@
         tabelLahanDiv.id = cardId;
         tabelLahanDiv.innerHTML = `
         <div class="col-11 ms-4-2">
-        <div class="alert1 alert-light me-n3-1" onclick="toggleElements(${cardCounter})">
+    <div class="alert1 alert-light me-n3-1" onclick="toggleElements(${cardCounter})">
         <div class="row">
             <div class="col-md mb-n2">
                 <div id="namaLahanDiv${cardCounter}"></div>
@@ -93,8 +179,8 @@
                 <div id="idLahanDiv${cardCounter}"></div>
             </div>
         </div>
-        </div>
-        <div class="content col-md-12 pt-2" id="content${cardCounter}" style="display: none;">
+    </div>
+    <div class="content col-md-12 pt-2" id="content${cardCounter}" style="display: none;">
         <div class="card1 me-n3-1 mt-n4 mb-4">
             <div class="card-body ms-n4-1 mb-n2">
                 <div class="row">
@@ -128,14 +214,27 @@
                                         onclick="hapusWarna('white')">Hapus</button>
                                     <button class="btn btn-secondary ms-2-1 px-4-1">Info</button>
                                 </div>
+                                <div>
+                                    <button class="btn btn-danger pe-5 ms-n1" onclick="setTimer()">Tambah Waktu</button>
+                                    <div id="dateAndActionPicker" style="display: none;">
+                                        <label for="dateTimePicker">Pilih Tanggal dan Waktu:</label>
+                                        <input type="datetime-local" id="dateTimePicker">
+                                        <label for="actionPicker">Pilih Aksi:</label>
+                                        <select id="actionPicker">
+                                            <option value="Fertilization">Pemupukan</option>
+                                            <option value="Harvest">Panen</option>
+                                        </select>
+                                        <button class="btn btn-primary" onclick="confirmDateTimeAction()">OK</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        </div>
-        </div>
+    </div>
+</div>
         `;
         tabelLahanContainer.appendChild(tabelLahanDiv);
 
@@ -206,6 +305,8 @@
                     this.style.backgroundColor = warnaAktif;
                     this.style.width = cellWidth;
                     this.style.height = cellHeight;
+
+                    selectCell(this);
                 });
 
                 row.appendChild(cell);
