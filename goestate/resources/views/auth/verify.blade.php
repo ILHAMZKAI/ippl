@@ -5,7 +5,8 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: url('{{ asset('img/bg102.jpg') }}') no-repeat center top fixed, #f4f4f4;
+            background: url('{{ asset(' img/bg102.jpg') }}') no-repeat center top fixed,
+            #f4f4f4;
             background-size: cover, auto;
         }
 
@@ -60,8 +61,7 @@
         <p>Silakan klik tombol di bawah untuk verifikasi email Anda.</p>
         <form class="d-inline" method="POST" action="{{ route('verification.send') }}">
             @csrf
-            <button type="submit" class="btn btn-verify"
-                onclick="showVerificationAlert()">{{ __('Klik untuk verifikasi') }}</button>
+            <button type="submit" class="btn btn-verify" onclick="showVerificationAlert()">{{ __('Klik untuk verifikasi') }}</button>
         </form>
     </div>
 
