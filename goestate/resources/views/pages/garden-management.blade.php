@@ -25,7 +25,6 @@
         </div>
         <div class="card-body mx-n8 mb-n3">
             <div>
-
                 <button class="btn btn-dark pe-4" id="hapusButton" onclick="hapusSelectedCell()">Hapus</button>
                 <button class="btn btn-dark ms-3 px-4-1">Info</button>
             </div>
@@ -248,6 +247,7 @@
                 }
             }
 
+
             originalText = selectedCell.textContent;
 
             if (selectedCell.getAttribute('data-timer')) {
@@ -296,7 +296,9 @@
                             }
                         }
 
-                        var totalWeightElement = document.getElementById('totalWeight');
+                        var tableBodyId = selectedCell.closest('tbody').id;
+                        var idWithoutPrefix = tableBodyId.substring('tableBody'.length);
+                        var totalWeightElement = document.getElementById('totalWeight' + idWithoutPrefix);
                         totalWeightElement.textContent = totalWeight;
                     });
                     inputText.addEventListener("input", function() {
@@ -446,8 +448,8 @@
                     </div>
                     <div class="col-md-2 ms-n5">
                         <div class="card">
-                            <div class="card-body" id="result${cardCounter}">
-                                Total Berat: <span id="totalWeight">0</span>
+                            <div class="card-body">
+                                Total Berat: <span id="totalWeight${cardCounter}">0</span>
                                 <button class="btn btn-dark px-4 mt-2 mb-n1" onclick="resetCell()">Reset</button>
                             </div>
                         </div>
