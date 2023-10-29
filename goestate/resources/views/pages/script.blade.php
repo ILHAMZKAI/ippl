@@ -22,7 +22,6 @@
         }
     });
 
-
     function closeButton() {
         floatingDivVisible = false;
         floatingDiv.style.display = "none";
@@ -77,14 +76,19 @@
     var activeColor = "none";
     var isSelectedCells = new Map();
     var isDateAndAction = false;
+    var isNotes = false;
     var totalWeights = {};
 
     function setTimer() {
         var dateAndActionPicker = document.getElementById('dateAndActionPicker');
-        if (dateAndActionPicker.style.display === 'none' || dateAndActionPicker.style.display === '') {
+        if (dateAndActionPicker.style.display === 'none' || dateAndActionPicker.style.display === '' || NotesPicker.style.display === 'block') {
             dateAndActionPicker.style.display = 'block';
             timerButton.style.backgroundColor = "#8392ab";
             isDateAndAction = true;
+
+            NotesPicker.style.display = 'none';
+            catatanButton.style.backgroundColor = "";
+            isNotes = false;
         } else {
             dateAndActionPicker.style.display = 'none';
             timerButton.style.backgroundColor = "";
@@ -244,8 +248,54 @@
         isSelectedCells.clear();
     }
 
-    function catatan(cell) {
+    function confirmNotes() {
+        var notesInput = document.getElementById("notesInput");
+        var notesText = notesInput.value;
 
+        if (confirm('Apakah data sudah benar?')) {
+            isSelectedCells.forEach(function(selectedCell) {
+                if (selectedCell.querySelector('input')) {
+                    selectedCell.querySelector('input').value = notesText;
+                    var numericValues = notesText.match(/\d+/g);
+                    if (numericValues) {
+                        numericValues.forEach(function(value) {
+                            var numericValue = parseInt(value, 10);
+                            if (!isNaN(numericValue)) {
+                                var tableBodyId = selectedCell.closest('tbody').id;
+                                if (!totalWeights[tableBodyId]) {
+                                    totalWeights[tableBodyId] = 0;
+                                }
+                                totalWeights[tableBodyId] += numericValue;
+
+                                var idWithoutPrefix = tableBodyId.substring('tableBody'.length);
+                                var totalWeightElement = document.getElementById('totalWeight' + idWithoutPrefix);
+                                totalWeightElement.textContent = totalWeights[tableBodyId];
+                            }
+                        });
+                    }
+                } else {
+                    var spanElement = selectedCell.querySelector('span');
+                    if (!spanElement) {
+                        alert('Kotak yang kosong tidak dapat diberi data');
+                    }
+                }
+                isSelectedCells.forEach(function(selectedCell) {
+                    selectedCell.style.backgroundColor = 'white';
+                    var cellContent = selectedCell.textContent;
+                    if (cellContent.includes("Pemupukan")) {
+                        selectedCell.style.backgroundColor = 'yellow';
+                    } else if (cellContent.includes("Panen")) {
+                        selectedCell.style.backgroundColor = 'green';
+                    }
+                });
+            });
+        }
+
+        var NotesPicker = document.getElementById('NotesPicker');
+        NotesPicker.style.display = 'none';
+        catatanButton.style.backgroundColor = "";
+        isNotes = false;
+        isSelectedCells.clear();
     }
 
     function selectCell(cell) {
@@ -259,6 +309,15 @@
                 resetCellTimer(cell);
             } else {
                 if (isDateAndAction == true) {
+                    cell.style.backgroundColor = 'cyan';
+                    isSelectedCells.set(cell, cell);
+                }
+            }
+        } else if (isNotes == true) {
+            if (isSelectedCells.has(cell)) {
+                cell.textContent = notesInput.value;
+            } else {
+                if (isNotes == true) {
                     cell.style.backgroundColor = 'cyan';
                     isSelectedCells.set(cell, cell);
                 }
@@ -291,12 +350,18 @@
 
     function catatan() {
         var NotesPicker = document.getElementById('NotesPicker');
-        if (NotesPicker.style.display === 'none' || NotesPicker.style.display === '') {
+        if (NotesPicker.style.display === 'none' || NotesPicker.style.display === '' || dateAndActionPicker.style.display === 'block') {
             NotesPicker.style.display = 'block';
             catatanButton.style.backgroundColor = "#8392ab";
+            isNotes = true;
+
+            dateAndActionPicker.style.display = 'none';
+            timerButton.style.backgroundColor = "";
+            isDateAndAction = false;
         } else {
             NotesPicker.style.display = 'none';
             catatanButton.style.backgroundColor = "";
+            isNotes = false;
             isSelectedCells.forEach(function(selectedCell) {
                 selectedCell.style.backgroundColor = 'white';
                 var cellContent = selectedCell.textContent;
@@ -475,6 +540,14 @@
                         cells[i].removeAttribute('data-timer');
                         cells[i].removeAttribute('data-timer-set');
                     }
+                }
+                var tableBodyId = table.querySelector('tbody').id;
+                totalWeights[tableBodyId] = 0;
+
+                var idWithoutPrefix = tableBodyId.substring('tableBody'.length);
+                var totalWeightElement = document.getElementById('totalWeight' + idWithoutPrefix);
+                if (totalWeightElement) {
+                    totalWeightElement.textContent = totalWeights[tableBodyId];
                 }
             }
         }

@@ -44,7 +44,8 @@
             <div>
                 <button class="btn btn-dark px-md-5" id="catatanButton" onclick="catatan()">Tambah Catatan</button>
                 <div id="NotesPicker" style="display: none;">
-                    <button class="btn btn-success" onclick="confirmNotes()">OK</button>
+                    <input type="text" class="form-control" id="notesInput" placeholder="Angka dalam kilogram">
+                    <button class="btn btn-success mt-3" onclick="confirmNotes()">OK</button>
                 </div>
             </div>
         </div>
