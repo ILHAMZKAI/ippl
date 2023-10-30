@@ -106,6 +106,14 @@
         }
     }
 
+    function tutup() {
+        var dateAndActionPicker = document.getElementById('dateAndActionPicker');
+        dateAndActionPicker.style.display = 'none';
+        timerButton.style.backgroundColor = "";
+        isDateAndAction = false;
+        isSelectedCells.clear();
+    }
+
     function confirmDateTimeAction() {
         var dateTimePicker = document.getElementById('dateTimePicker');
         var actionPicker = document.getElementById('actionPicker');
@@ -135,16 +143,18 @@
                         resetCellTimer(selectedCell);
                     });
                 } else {
-                    var spanText = selectedCell.querySelector('span').textContent;
-                    if (spanText === 'Pemupukan') {
-                        selectedCell.style.backgroundColor = 'yellow';
-                    } else if (spanText === 'Panen') {
-                        selectedCell.style.backgroundColor = 'green';
-                    } else {
-                        selectedCell.style.backgroundColor = originalBackgroundColor;
-                    }
-                    return;
+                    isSelectedCells.forEach(function(selectedCell) {
+                        var spanText = selectedCell.querySelector('span').textContent;
+                        if (spanText === 'Pemupukan') {
+                            selectedCell.style.backgroundColor = 'yellow';
+                        } else if (spanText === 'Panen') {
+                            selectedCell.style.backgroundColor = 'green';
+                        } else {
+                            selectedCell.style.backgroundColor = originalBackgroundColor;
+                        }
+                    });
                 }
+                tutup();
             }
 
 
@@ -241,11 +251,7 @@
             selectedCell.textContent = selectedDateTime.toLocaleString();
         });
 
-        var dateAndActionPicker = document.getElementById('dateAndActionPicker');
-        dateAndActionPicker.style.display = 'none';
-        timerButton.style.backgroundColor = "";
-        isDateAndAction = false;
-        isSelectedCells.clear();
+        tutup();
     }
 
     function confirmNotes() {
@@ -332,7 +338,7 @@
         cell.removeAttribute('data-timer');
         cell.removeAttribute('data-timer-set');
         cell.style.backgroundColor = 'white';
-        cell.textContent = originalText;
+        cell.textContent = '';
     }
 
     function zoomIn(cardId) {
