@@ -134,7 +134,6 @@
         }
 
         var selectedDateTime = new Date(dateTimePicker.value);
-        var action = actionPicker.value;
 
         isSelectedCells.forEach(function(selectedCell) {
             if (selectedCell.getAttribute('data-timer-set') === 'true') {
@@ -262,24 +261,27 @@
         if (confirm('Apakah data sudah benar?')) {
             isSelectedCells.forEach(function(selectedCell) {
                 if (selectedCell.querySelector('input')) {
-                    selectedCell.querySelector('input').value = notesText;
-                    var numericValues = notesText.match(/\d+/g);
-                    if (numericValues) {
-                        numericValues.forEach(function(value) {
-                            var numericValue = parseInt(value, 10);
-                            if (!isNaN(numericValue)) {
-                                var tableBodyId = selectedCell.closest('tbody').id;
-                                if (!totalWeights[tableBodyId]) {
-                                    totalWeights[tableBodyId] = 0;
-                                }
-                                totalWeights[tableBodyId] += numericValue;
+                    var inputElement = selectedCell.querySelector('input');
+                    var previousValue = inputElement.getAttribute('data-previous-input');
+                    var newValue = notesText;
 
-                                var idWithoutPrefix = tableBodyId.substring('tableBody'.length);
-                                var totalWeightElement = document.getElementById('totalWeight' + idWithoutPrefix);
-                                totalWeightElement.textContent = totalWeights[tableBodyId];
-                            }
-                        });
+                    var previousNumericValue = parseInt(previousValue, 10) || 0;
+                    var newNumericValue = parseInt(newValue, 10) || 0;
+
+                    var tableBodyId = selectedCell.closest('tbody').id;
+                    if (!totalWeights[tableBodyId]) {
+                        totalWeights[tableBodyId] = 0;
                     }
+                    totalWeights[tableBodyId] -= previousNumericValue;
+
+                    totalWeights[tableBodyId] += newNumericValue;
+
+                    var idWithoutPrefix = tableBodyId.substring('tableBody'.length);
+                    var totalWeightElement = document.getElementById('totalWeight' + idWithoutPrefix);
+                    totalWeightElement.textContent = totalWeights[tableBodyId];
+
+                    inputElement.value = newValue;
+                    inputElement.setAttribute('data-previous-input', newValue);
                 } else {
                     var spanElement = selectedCell.querySelector('span');
                     if (!spanElement) {
@@ -289,6 +291,7 @@
                         }
                     }
                 }
+
                 isSelectedCells.forEach(function(selectedCell) {
                     selectedCell.style.backgroundColor = 'white';
                     var cellContent = selectedCell.textContent;
@@ -300,6 +303,7 @@
                 });
             });
         }
+
         isSelectedCells.forEach(function(selectedCell) {
             selectedCell.style.backgroundColor = 'white';
             var cellContent = selectedCell.textContent;
@@ -316,6 +320,7 @@
         isNotes = false;
         isSelectedCells.clear();
     }
+
 
 
     function selectCell(cell) {
