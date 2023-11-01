@@ -56,7 +56,7 @@
     <div class="col-md-2">
         <div class="card px-8 mb-3">
             <div class="card-body mx-n8 mb-n3">
-                <form id="formInputLahan">
+                <form>
                     <div class="form-group">
                         <label for="inputNamaLahan">Nama Lahan:</label>
                         <input type="text" class="form-control" id="inputNamaLahan" placeholder="Masukkan nama lahan" required>
@@ -69,7 +69,7 @@
                         <label for="inputKolom">Kolom:</label>
                         <input type="number" class="form-control" id="inputKolom" placeholder="Masukkan jumlah kolom" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Buat Lahan</button>
+                    <button type="button" class="btn btn-primary" onclick="createLahan()">Buat Lahan</button>
                 </form>
             </div>
         </div>
@@ -80,7 +80,7 @@
     <div class="col-md-2">
         <div class="card px-8 mb-3">
             <div class="card-body mx-n8 mb-n3">
-                <form id="formEdit">
+                <form>
                     <div class="form-group">
                         <label for="EinputIdLahan">ID Lahan:</label>
                         <input type="text" class="form-control" id="EinputIdLahan" placeholder="Masukkan ID lahan" required>

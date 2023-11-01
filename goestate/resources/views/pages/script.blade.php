@@ -150,11 +150,11 @@
                         } else if (spanText === 'Panen') {
                             selectedCell.style.backgroundColor = 'green';
                         } else {
-                            selectedCell.style.backgroundColor = originalBackgroundColor;
+                            selectedCell.style.backgroundColor = 'white';
                         }
                     });
+                    tutup();
                 }
-                tutup();
             }
 
 
@@ -257,6 +257,7 @@
     function confirmNotes() {
         var notesInput = document.getElementById("notesInput");
         var notesText = notesInput.value;
+        var alertShown = false;
 
         if (confirm('Apakah data sudah benar?')) {
             isSelectedCells.forEach(function(selectedCell) {
@@ -282,7 +283,10 @@
                 } else {
                     var spanElement = selectedCell.querySelector('span');
                     if (!spanElement) {
-                        alert('Kotak yang kosong tidak dapat diberi data');
+                        if (!alertShown) {
+                            alert('Kotak yang kosong tidak dapat diberi data');
+                            alertShown = true;
+                        }
                     }
                 }
                 isSelectedCells.forEach(function(selectedCell) {
@@ -296,6 +300,15 @@
                 });
             });
         }
+        isSelectedCells.forEach(function(selectedCell) {
+            selectedCell.style.backgroundColor = 'white';
+            var cellContent = selectedCell.textContent;
+            if (cellContent.includes("Pemupukan")) {
+                selectedCell.style.backgroundColor = 'yellow';
+            } else if (cellContent.includes("Panen")) {
+                selectedCell.style.backgroundColor = 'green';
+            }
+        });
 
         var NotesPicker = document.getElementById('NotesPicker');
         NotesPicker.style.display = 'none';
@@ -303,6 +316,7 @@
         isNotes = false;
         isSelectedCells.clear();
     }
+
 
     function selectCell(cell) {
         if (isClearingEnabled) {
@@ -322,6 +336,8 @@
         } else if (isNotes == true) {
             if (isSelectedCells.has(cell)) {
                 cell.textContent = notesInput.value;
+                isSelectedCells.delete(cell);
+                resetCellTimer(cell);
             } else {
                 if (isNotes == true) {
                     cell.style.backgroundColor = 'cyan';
@@ -484,6 +500,19 @@
         cardCounter++;
     }
 
+    function createLahan() {
+        var namaLahan = document.getElementById("inputNamaLahan").value;
+        var jumlahBaris = parseInt(document.getElementById("inputBaris").value);
+        var jumlahKolom = parseInt(document.getElementById("inputKolom").value);
+
+        if (!isNaN(jumlahBaris) && !isNaN(jumlahKolom) && jumlahBaris > 0 && jumlahKolom > 0 && jumlahBaris <= 16 && jumlahKolom <= 26) {
+            buatCard(namaLahan, jumlahBaris, jumlahKolom);
+            document.getElementById("formLahan").style.display = "none";
+        } else {
+            alert("Harap masukkan nilai yang valid untuk baris (maksimum 16) dan kolom (maksimum 26)");
+        }
+    }
+
     function buatTabel(namaLahan, baris, kolom, counter) {
         var tableBody = document.getElementById(`tableBody${counter}`);
         tableBody.innerHTML = '';
@@ -608,7 +637,7 @@
                             var cell = document.createElement("td");
                             cell.className = "cell";
                             cell.style.backgroundColor = "white";
-                            cell.style.border = "3px solid black";
+                            cell.style.border = "3px solid grey";
                             cell.style.width = cellWidth;
                             cell.style.height = cellHeight;
                             cell.style.overflow = "hidden";
@@ -682,20 +711,6 @@
             document.getElementById("formLahan").style.display = "none";
         } else {
             formUbah.style.display = "none";
-        }
-    });
-
-    document.getElementById("formInputLahan").addEventListener("submit", function(event) {
-        event.preventDefault();
-        var namaLahan = document.getElementById("inputNamaLahan").value;
-        var jumlahBaris = parseInt(document.getElementById("inputBaris").value);
-        var jumlahKolom = parseInt(document.getElementById("inputKolom").value);
-
-        if (!isNaN(jumlahBaris) && !isNaN(jumlahKolom) && jumlahBaris > 0 && jumlahKolom > 0 && jumlahBaris <= 16 && jumlahKolom <= 26) {
-            buatCard(namaLahan, jumlahBaris, jumlahKolom);
-            document.getElementById("formLahan").style.display = "none";
-        } else {
-            alert("Harap masukkan nilai yang valid untuk baris (maksimum 16) dan kolom (maksimum 26)");
         }
     });
 
