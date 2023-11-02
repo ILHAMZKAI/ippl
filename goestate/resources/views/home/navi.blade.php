@@ -7,7 +7,7 @@
     <div class="container-fluid sticky-top">
         <div class="container">
             <nav class="navbar navbar-expand-lg navbar-dark p-0">
-                <a href="index.html" class="navbar-brand">
+                <a href="#home" class="navbar-brand">
                     <h1 class="text-white"><img class="img-fluid" src="img/logo-01.png"
                             style="width: 40px; height: 40px";>
                         GoEstate</h1>
@@ -18,7 +18,7 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <div class="navbar-nav ms-auto">
-                        <a href="#hero" class="nav-item nav-link active">Home</a>
+                        <a href="#home" class="nav-item nav-link active">Home</a>
                         <a href="#about-us" class="nav-item nav-link">About</a>
                         <a href="#services" class="nav-item nav-link">Services</a>
                         <a href="#faq" class="nav-item nav-link">FAQs</a>

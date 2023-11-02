@@ -35,7 +35,7 @@
 <body>
     @include('home.navi')
 
-    @include('home.hero')
+    @include('home.home')
 
     <!-- Full Screen Search Start -->
     <div class="modal fade" id="searchModal" tabindex="-1">
