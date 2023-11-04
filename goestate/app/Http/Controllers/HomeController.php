@@ -23,11 +23,12 @@ class HomeController extends Controller
      *
      * @return \Illuminate\View\View
      */
+
     public function index()
     {
         $usertype = Auth::user()->usertype;
         if ($usertype == '1') {
-            return view('admin\home');
+            return view('admin.home');
         } else {
             return view('pages.dashboard');
         }
