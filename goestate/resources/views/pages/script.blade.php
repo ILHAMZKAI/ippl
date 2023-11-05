@@ -81,7 +81,8 @@
 
     function setTimer() {
         var dateAndActionPicker = document.getElementById('dateAndActionPicker');
-        if (dateAndActionPicker.style.display === 'none' || dateAndActionPicker.style.display === '' || NotesPicker.style.display === 'block') {
+        if (dateAndActionPicker.style.display === 'none' || dateAndActionPicker.style.display === '' || NotesPicker
+            .style.display === 'block') {
             dateAndActionPicker.style.display = 'block';
             timerButton.style.backgroundColor = "#8392ab";
             isDateAndAction = true;
@@ -171,7 +172,8 @@
                 }
                 selectedCell.style.backgroundColor = 'red';
                 var timer = setTimeout(function() {
-                    selectedCell.style.backgroundColor = (action === 'Fertilization') ? 'yellow' : 'green';
+                    selectedCell.style.backgroundColor = (action === 'Fertilization') ? 'yellow' :
+                        'green';
                     selectedCell.setAttribute('data-timer-set', 'true');
 
                     var container = document.createElement('div');
@@ -228,7 +230,8 @@
 
                         var tableBodyIds = selectedCell.closest('tbody').id;
                         var idWithoutPrefix = tableBodyIds.substring('tableBody'.length);
-                        var totalWeightElement = document.getElementById('totalWeight' + idWithoutPrefix);
+                        var totalWeightElement = document.getElementById('totalWeight' +
+                            idWithoutPrefix);
                         totalWeightElement.textContent = totalWeights[tableBodyId];
 
                         input.setAttribute('data-previous-input', inputText);
@@ -377,7 +380,8 @@
 
     function catatan() {
         var NotesPicker = document.getElementById('NotesPicker');
-        if (NotesPicker.style.display === 'none' || NotesPicker.style.display === '' || dateAndActionPicker.style.display === 'block') {
+        if (NotesPicker.style.display === 'none' || NotesPicker.style.display === '' || dateAndActionPicker.style
+            .display === 'block') {
             NotesPicker.style.display = 'block';
             catatanButton.style.backgroundColor = "#8392ab";
             isNotes = true;
@@ -510,7 +514,8 @@
         var jumlahBaris = parseInt(document.getElementById("inputBaris").value);
         var jumlahKolom = parseInt(document.getElementById("inputKolom").value);
 
-        if (!isNaN(jumlahBaris) && !isNaN(jumlahKolom) && jumlahBaris > 0 && jumlahKolom > 0 && jumlahBaris <= 16 && jumlahKolom <= 26) {
+        if (!isNaN(jumlahBaris) && !isNaN(jumlahKolom) && jumlahBaris > 0 && jumlahKolom > 0 && jumlahBaris <= 16 &&
+            jumlahKolom <= 26) {
             buatCard(namaLahan, jumlahBaris, jumlahKolom);
             document.getElementById("formLahan").style.display = "none";
         } else {
@@ -610,7 +615,8 @@
     document.addEventListener('click', function(event) {
         var hapusButton = document.getElementById("hapusButton");
 
-        if (!hapusButton.contains(event.target) && !event.target.classList.contains('cell') && !event.target.classList.contains('selected-cell')) {
+        if (!hapusButton.contains(event.target) && !event.target.classList.contains('cell') && !event.target
+            .classList.contains('selected-cell')) {
             isClearingEnabled = false;
             hapusButton.style.backgroundColor = "";
         }
@@ -622,11 +628,14 @@
         var inputBaris = parseInt(document.getElementById("EinputBaris").value);
         var inputKolom = parseInt(document.getElementById("EinputKolom").value);
 
-        if (!isNaN(inputBaris) && !isNaN(inputKolom) && inputBaris > 0 && inputKolom > 0 && inputBaris <= 16 && inputKolom <= 26) {
+        if (!isNaN(inputBaris) && !isNaN(inputKolom) && inputBaris > 0 && inputKolom > 0 && inputBaris <= 16 &&
+            inputKolom <= 26) {
             var cardToUpdate = document.getElementById(inputIdLahan);
 
             if (cardToUpdate) {
-                var confirmation = confirm("Tindakan ini akan mengatur ulang semua data dari Lahan yang dipilih. Apakah Anda ingin melanjutkan?");
+                var confirmation = confirm(
+                    "Tindakan ini akan mengatur ulang semua data dari Lahan yang dipilih. Apakah Anda ingin melanjutkan?"
+                    );
                 if (confirmation) {
                     document.getElementById("dateTimePicker").value = "";
                     document.getElementById("actionPicker").value = "";
@@ -736,8 +745,10 @@
 
     function simpanData() {
         var tabelLahanContainer = document.getElementById("tabelLahanContainer").innerHTML;
+
         localStorage.setItem('tabelLahanData', tabelLahanContainer);
-        alert('Data telah disimpan');
+
+        alert('Data telah disimpan ke penyimpanan lokal.');
     }
 
     window.onload = function() {
@@ -745,5 +756,10 @@
         if (savedData) {
             document.getElementById("tabelLahanContainer").innerHTML = savedData;
         }
+    }
+
+    function removeSavedData() {
+        localStorage.removeItem('tabelLahanData');
+        alert('Saved data has been removed.');
     }
 </script>
