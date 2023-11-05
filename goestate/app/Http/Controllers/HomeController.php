@@ -28,7 +28,9 @@ class HomeController extends Controller
     {
         $usertype = Auth::user()->usertype;
         if ($usertype == '1') {
-            return view('admin.home');
+            $users = User::select('id', 'username', 'firstname', 'email', 'address')->get();
+            return view('admin.home', ['users' => $users]);
+
         } else {
             return view('pages.dashboard');
         }
