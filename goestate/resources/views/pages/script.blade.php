@@ -733,4 +733,17 @@
             contentElement.classList.add('hidden-content');
         }
     }
+
+    function simpanData() {
+        var tabelLahanContainer = document.getElementById("tabelLahanContainer").innerHTML;
+        localStorage.setItem('tabelLahanData', tabelLahanContainer);
+        alert('Data telah disimpan');
+    }
+
+    window.onload = function() {
+        var savedData = localStorage.getItem('tabelLahanData');
+        if (savedData) {
+            document.getElementById("tabelLahanContainer").innerHTML = savedData;
+        }
+    }
 </script>
