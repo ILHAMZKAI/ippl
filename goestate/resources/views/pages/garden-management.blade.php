@@ -7,7 +7,7 @@
         <div class="alert1 alert-light"><strong>Perkebunan</strong>
             @csrf
             <button class="btn btn-gm1 ms-0 mx-auto mt-n2" onclick="toggleFloatingDiv()">Alat</button>
-            <button action="{{ route('simpan.data') }}" method="POST" class="btn btn-gm1 ms-0 mx-3 mt-n2" onclick="simpanData()">Simpan</button>
+            <button class="btn btn-gm1 ms-0 mx-3 mt-n2" onclick="simpanData()">Simpan</button>
             <button class="btn btn-gm1 ms-0 mx-3 mt-n2" id="UbahLahanButton">Ubah Lahan</button>
             <button class="btn btn-gm1 ms-0 mx-3 mt-n2" id="tambahLahanButton">Tambah Lahan</button>
         </div>
