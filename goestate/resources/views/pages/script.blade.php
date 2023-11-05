@@ -733,4 +733,24 @@
             contentElement.classList.add('hidden-content');
         }
     }
+
+    function simpanData() {
+        var tabelLahanContainer = document.getElementById("tabelLahanContainer").innerHTML;
+
+        localStorage.setItem('tabelLahanData', tabelLahanContainer);
+
+        alert('Data telah disimpan ke penyimpanan lokal.');
+    }
+
+    window.onload = function() {
+        var savedData = localStorage.getItem('tabelLahanData');
+        if (savedData) {
+            document.getElementById("tabelLahanContainer").innerHTML = savedData;
+        }
+    }
+
+    function removeSavedData() {
+        localStorage.removeItem('tabelLahanData');
+        alert('Saved data has been removed.');
+    }
 </script>

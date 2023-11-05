@@ -6,6 +6,7 @@
     <div class="col-12 mx-1">
         <div class="alert1 alert-light"><strong>Perkebunan</strong>
             @csrf
+            <button onclick="removeSavedData()">Remove Saved Data</button>
             <button class="btn btn-gm1 ms-0 mx-auto mt-n2" onclick="toggleFloatingDiv()">Alat</button>
             <button class="btn btn-gm1 ms-0 mx-3 mt-n2" onclick="simpanData()">Simpan</button>
             <button class="btn btn-gm1 ms-0 mx-3 mt-n2" id="UbahLahanButton">Ubah Lahan</button>
