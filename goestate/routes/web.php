@@ -9,6 +9,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\ResetPassword;
 use App\Http\Controllers\ChangePassword;
+use App\Http\Controllers\LahanController;
 
 
 Route::get('/', function () {
@@ -18,7 +19,10 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
+Route::get('/garden-management', [LahanController::class, 'index'])->name('garden-management')->middleware('auth');
+Route::post('/garden-management', [LahanController::class, 'create'])->name('create-lahan');
+Route::post('/delete-lahan/{id}', [LahanController::class, 'delete'])->name('delete-lahan');
+Route::post('/update-lahan', [LahanController::class, 'updateLahan'])->name('update-lahan');
 Route::get('/register', [RegisterController::class, 'create'])->middleware('guest')->name('register');
 Route::post('/register', [RegisterController::class, 'store'])->middleware('guest')->name('register.perform');
 Route::get('/login', [LoginController::class, 'show'])->middleware('guest')->name('login');

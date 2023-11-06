@@ -60,4 +60,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $this->attributes['password'] = bcrypt($value);
     }
+
+    public function lahan()
+    {
+        return $this->hasMany(Lahan::class);
+    }
 }

@@ -1,37 +1,79 @@
 <script>
-    let floatingDivVisible = false;
+    var autoHideAlerts = document.querySelectorAll('.auto-hide-alert');
 
-    function minButton() {
-        const minDiv = document.getElementById("minDiv");
-
-        if (minDiv) {
-            minDiv.style.display = "block";
+    autoHideAlerts.forEach(function (autoHideAlert) {
+        if (autoHideAlert) {
+            setTimeout(function () {
+                autoHideAlert.style.display = 'none';
+            }, 6000);
         }
+    });
 
+    let floatingDivVisible = false;
+    let isDragging = false;
+    let initialX;
+    let initialY;
+
+    function closeButton() {
+        const floatingDiv = document.getElementById("floatingDiv");
         floatingDivVisible = false;
         floatingDiv.style.display = "none";
     }
 
-    document.getElementById("minDiv").addEventListener("click", function() {
-        let floatingDiv = document.getElementById("floatingDiv");
+    function minButton() {
+        const floatingDiv = document.getElementById("floatingDiv");
+        const minDiv = document.getElementById("minDiv");
 
-        if (floatingDiv) {
-            minDiv.style.display = "none";
-            floatingDiv.style.display = "block";
-            floatingDivVisible = true;
-        }
-    });
-
-    function closeButton() {
         floatingDivVisible = false;
         floatingDiv.style.display = "none";
+        minDiv.style.display = "block";
+        toggleMinDiv(minDiv);
+    }
+
+    function toggleMinDiv(minDiv) {
+        minDiv.addEventListener("mousedown", (e) => {
+            isDragging = true;
+            initialX = e.clientX - minDiv.getBoundingClientRect().left;
+            initialY = e.clientY - minDiv.getBoundingClientRect().top;
+        });
+
+        document.addEventListener("mouseup", () => {
+            isDragging = false;
+        });
+
+        minDiv.addEventListener("mouseover", () => {
+            minDiv.style.cursor = "move";
+        });
+
+        minDiv.addEventListener("mouseout", () => {
+            minDiv.style.cursor = "auto";
+        });
+
+        document.addEventListener("mousemove", (e) => {
+            if (!isDragging) return;
+
+            const newX = e.clientX - initialX;
+            const newY = e.clientY - initialY;
+
+            minDiv.style.left = newX + "px";
+            minDiv.style.top = newY + "px";
+        });
+
+        minDiv.addEventListener("click", function () {
+            if (!isDragging) {
+                floatingDivVisible = true;
+                floatingDiv.style.display = "block";
+                minDiv.style.display = "none";
+            }
+        });
+
+        minDiv.addEventListener("mousedown", function (event) {
+            event.preventDefault();
+        });
     }
 
     function toggleFloatingDiv() {
         const floatingDiv = document.getElementById("floatingDiv");
-        let isDragging = false;
-        let initialX;
-        let initialY;
 
         floatingDiv.addEventListener("mousedown", (e) => {
             isDragging = true;
@@ -60,8 +102,10 @@
             floatingDiv.style.left = newX + "px";
             floatingDiv.style.top = newY + "px";
         });
+
         if (!floatingDivVisible) {
-            if (minDiv.style.display = "block") {
+            const minDiv = document.getElementById("minDiv");
+            if (minDiv.style.display === "block") {
                 minDiv.style.display = "none";
             }
             floatingDiv.style.display = "block";
@@ -94,7 +138,7 @@
             dateAndActionPicker.style.display = 'none';
             timerButton.style.backgroundColor = "";
             isDateAndAction = false;
-            isSelectedCells.forEach(function(selectedCell) {
+            isSelectedCells.forEach(function (selectedCell) {
                 selectedCell.style.backgroundColor = 'white';
                 var cellContent = selectedCell.textContent;
                 if (cellContent.includes("Pemupukan")) {
@@ -136,14 +180,14 @@
 
         var selectedDateTime = new Date(dateTimePicker.value);
 
-        isSelectedCells.forEach(function(selectedCell) {
+        isSelectedCells.forEach(function (selectedCell) {
             if (selectedCell.getAttribute('data-timer-set') === 'true') {
                 if (confirm('Waktu sudah diterapkan disini. Apakah Anda ingin mengubahnya?')) {
-                    isSelectedCells.forEach(function(selectedCell) {
+                    isSelectedCells.forEach(function (selectedCell) {
                         resetCellTimer(selectedCell);
                     });
                 } else {
-                    isSelectedCells.forEach(function(selectedCell) {
+                    isSelectedCells.forEach(function (selectedCell) {
                         var spanText = selectedCell.querySelector('span').textContent;
                         if (spanText === 'Pemupukan') {
                             selectedCell.style.backgroundColor = 'yellow';
@@ -171,7 +215,7 @@
                     totalWeights[tableBodyId] = 0;
                 }
                 selectedCell.style.backgroundColor = 'red';
-                var timer = setTimeout(function() {
+                var timer = setTimeout(function () {
                     selectedCell.style.backgroundColor = (action === 'Fertilization') ? 'yellow' :
                         'green';
                     selectedCell.setAttribute('data-timer-set', 'true');
@@ -197,7 +241,7 @@
                     inputText.style.color = "#066";
                     inputText.style.fontWeight = "bold";
                     inputText.placeholder = 'Catatan';
-                    inputText.addEventListener('input', function(event) {
+                    inputText.addEventListener('input', function (event) {
                         var input = event.target;
                         var inputText = input.value;
                         var previousInput = input.getAttribute('data-previous-input') || '';
@@ -236,7 +280,7 @@
 
                         input.setAttribute('data-previous-input', inputText);
                     });
-                    inputText.addEventListener("input", function() {
+                    inputText.addEventListener("input", function () {
                         if (this.value.length > 5) {
                             this.value = this.value.slice(0, 5);
                         }
@@ -262,7 +306,7 @@
         var alertShown = false;
 
         if (confirm('Apakah data sudah benar?')) {
-            isSelectedCells.forEach(function(selectedCell) {
+            isSelectedCells.forEach(function (selectedCell) {
                 if (selectedCell.querySelector('input')) {
                     var inputElement = selectedCell.querySelector('input');
                     var previousValue = inputElement.getAttribute('data-previous-input');
@@ -295,7 +339,7 @@
                     }
                 }
 
-                isSelectedCells.forEach(function(selectedCell) {
+                isSelectedCells.forEach(function (selectedCell) {
                     selectedCell.style.backgroundColor = 'white';
                     var cellContent = selectedCell.textContent;
                     if (cellContent.includes("Pemupukan")) {
@@ -307,7 +351,7 @@
             });
         }
 
-        isSelectedCells.forEach(function(selectedCell) {
+        isSelectedCells.forEach(function (selectedCell) {
             selectedCell.style.backgroundColor = 'white';
             var cellContent = selectedCell.textContent;
             if (cellContent.includes("Pemupukan")) {
@@ -365,19 +409,6 @@
         cell.textContent = '';
     }
 
-    function zoomIn(cardId) {
-        const contBody = document.getElementById(`contBody${cardId}`);
-        if (!contBody) return;
-
-        let currentScale = parseFloat(contBody.getAttribute("data-scale")) || 1;
-
-        if (currentScale < 1.1) {
-            currentScale += 0.1;
-            contBody.setAttribute("data-scale", currentScale);
-            updateZoom(contBody, currentScale);
-        }
-    }
-
     function catatan() {
         var NotesPicker = document.getElementById('NotesPicker');
         if (NotesPicker.style.display === 'none' || NotesPicker.style.display === '' || dateAndActionPicker.style
@@ -393,7 +424,7 @@
             NotesPicker.style.display = 'none';
             catatanButton.style.backgroundColor = "";
             isNotes = false;
-            isSelectedCells.forEach(function(selectedCell) {
+            isSelectedCells.forEach(function (selectedCell) {
                 selectedCell.style.backgroundColor = 'white';
                 var cellContent = selectedCell.textContent;
                 if (cellContent.includes("Pemupukan")) {
@@ -406,167 +437,72 @@
         }
     }
 
-    function zoomOut(cardId) {
-        const contBody = document.getElementById(`contBody${cardId}`);
-        if (!contBody) return;
+    function zoomIn(cardCounter) {
+        var tableContainer = document.getElementById(`contBody${cardCounter}`);
+        var currentTransform = tableContainer.style.transform || 'scale(1)';
+        var currentScale = parseFloat(currentTransform.match(/scale\(([^)]+)\)/)[1]);
+        var maxZoom = 3;
+        var newScale = currentScale + 0.2;
 
-        let currentScale = parseFloat(contBody.getAttribute("data-scale")) || 1;
-
-        if (currentScale > 0.5) {
-            currentScale -= 0.1;
-            contBody.setAttribute("data-scale", currentScale);
-            updateZoom(contBody, currentScale);
+        if (newScale <= maxZoom) {
+            tableContainer.style.transform = `scale(${newScale})`;
         }
     }
 
-    function updateZoom(contBody, currentScale) {
-        contBody.style.transform = `scale(${currentScale})`;
+    function zoomOut(cardCounter) {
+        var tableContainer = document.getElementById(`contBody${cardCounter}`);
+        var currentTransform = tableContainer.style.transform || 'scale(1)';
+        var currentScale = parseFloat(currentTransform.match(/scale\(([^)]+)\)/)[1]);
+        var minZoom = 0.5;
+        var newScale = currentScale - 0.1;
+
+        if (newScale >= minZoom) {
+            tableContainer.style.transform = `scale(${newScale})`;
+        }
     }
 
-    document.addEventListener('click', function(event) {
-        const zoomButtons = document.querySelectorAll('.btn.btn-primary');
+    function resetZoom(cardCounter) {
+        var tableContainer = document.getElementById(`contBody${cardCounter}`);
+        tableContainer.style.transform = 'scale(1)';
+    }
 
-        for (const button of zoomButtons) {
-            if (button.contains(event.target)) {
-                const cardId = button.getAttribute("data-card-id");
-                zoomIn(cardId);
-                return;
-            }
-        }
-
-        const cardContainers = document.querySelectorAll('.table-container');
-
-        for (const container of cardContainers) {
-            resetZoom(container);
+    document.addEventListener('click', function (event) {
+        var cardElement = event.target.closest('.card.mb-3');
+        if (!cardElement) {
+            resetZoom(cardCounter);
         }
     });
 
-    function resetZoom(contBody) {
-        contBody.style.transform = 'scale(1)';
-        contBody.setAttribute("data-scale", 1);
-    }
+    var cardElements = document.querySelectorAll('.card.mb-3');
+    cardElements.forEach(function (cardElement) {
+        cardElement.addEventListener('click', function (event) {
+            event.stopPropagation();
+        });
+    });
 
-    function buatCard(namaLahan, jumlahBaris, jumlahKolom) {
-        var containerCounter = 1;
-        var tabelLahanContainer = document.getElementById("tabelLahanContainer");
-        var tabelLahanDiv = document.createElement("div");
-        tabelLahanDiv.className = "row";
-        var cardId = "" + cardCounter;
-        tabelLahanDiv.id = cardId;
-        tabelLahanDiv.innerHTML = `
-        <div class="col-11 ms-4-2">
-    <div class="alert1 alert-light me-n3-1" onclick="toggleElements(${cardCounter})">
-        <div class="row">
-            <div class="col-md mb-n2">
-                <div id="namaLahanDiv${cardCounter}"></div>
-            </div>
-            <div class="col-md mb-n2">
-                <div id="idLahanDiv${cardCounter}"></div>
-            </div>
-            <div class="col-md-auto">
-                <i class="fas fa-trash me-2" style="cursor: pointer;" onclick="konfirmasiHapus('${cardCounter}')"></i>
-            </div>
-        </div>
-    </div>
-    <div class="content col-md-12 pt-2" id="content${cardCounter}" style="display: none;">
-        <div class="card1 me-n3-1 mt-n4 mb-4">
-            <div class="card-body ms-n4-1 mb-n2">
-                <div class="row">
-                    <div class="col-md-9 mx-4-1">
-                        <div class="card mb-3">
-                            <div class="card-body px-4 py-4">
-                            <button class="btn btn-primary me-3" onclick="zoomIn('${cardCounter}')"><i class="fas fa-search-plus"></i></button>
-                            <button class="btn btn-primary" onclick="zoomOut('${cardCounter}')"><i class="fas fa-search-minus"></i></button>
-                                <div class="table-container" id="contBody${cardCounter}" style="max-height: 300px; overflow: auto; transform: scale(1);">
-                                    <table class="table">
-                                        <tbody id="tableBody${cardCounter}">
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2 ms-n5">
-                        <div class="card">
-                            <div class="card-body">
-                                Total Berat: <span id="totalWeight${cardCounter}">0</span>
-                                <button class="btn btn-dark px-4 mt-2 mb-n1" onclick="resetCell()">Reset</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-        `;
-        tabelLahanContainer.appendChild(tabelLahanDiv);
-
-        var idLahanDiv = document.getElementById(`idLahanDiv${cardCounter}`);
-        idLahanDiv.textContent = "ID Lahan: " + cardId;
-
-        buatTabel(namaLahan, jumlahBaris, jumlahKolom, cardCounter);
-        cardCounter++;
-    }
 
     function createLahan() {
         var namaLahan = document.getElementById("inputNamaLahan").value;
-        var jumlahBaris = parseInt(document.getElementById("inputBaris").value);
-        var jumlahKolom = parseInt(document.getElementById("inputKolom").value);
+        var jumlahBaris = document.getElementById("inputBaris").value;
+        var jumlahKolom = document.getElementById("inputKolom").value;
 
-        if (!isNaN(jumlahBaris) && !isNaN(jumlahKolom) && jumlahBaris > 0 && jumlahKolom > 0 && jumlahBaris <= 16 &&
-            jumlahKolom <= 26) {
-            buatCard(namaLahan, jumlahBaris, jumlahKolom);
-            document.getElementById("formLahan").style.display = "none";
-        } else {
-            alert("Harap masukkan nilai yang valid untuk baris (maksimum 16) dan kolom (maksimum 26)");
-        }
-    }
+        var data = {
+            _token: '{{ csrf_token() }}',
+            namaLahan: namaLahan,
+            jumlahBaris: jumlahBaris,
+            jumlahKolom: jumlahKolom
+        };
 
-    function buatTabel(namaLahan, baris, kolom, counter) {
-        var tableBody = document.getElementById(`tableBody${counter}`);
-        tableBody.innerHTML = '';
-
-        var cellWidth = 100 / kolom + "%";
-        var cellHeight = 100 / baris + "%";
-
-        for (var i = 1; i <= baris; i++) {
-            var row = document.createElement("tr");
-            for (var j = 1; j <= kolom; j++) {
-                var cell = document.createElement("td");
-                cell.className = "cell";
-                cell.style.backgroundColor = "white";
-                cell.style.border = "3px solid grey";
-                cell.style.width = cellWidth;
-                cell.style.height = cellHeight;
-                cell.style.overflow = "hidden";
-                cell.style.lineHeight = cellHeight;
-                cell.style.padding = "0";
-                cell.style.margin = "0";
-
-                cell.setAttribute('data-width', cell.clientWidth + 'px');
-                cell.setAttribute('data-height', cell.clientHeight + 'px');
-
-                cell.setAttribute('data-row', i);
-                cell.setAttribute('data-col', j);
-
-                cell.addEventListener("click", function() {
-                    this.style.backgroundColor = activeColor;
-                    this.style.width = cellWidth;
-                    this.style.height = cellHeight;
-
-                    selectCell(this);
-                });
-
-                row.appendChild(cell);
+        fetch('/create-lahan', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json'
             }
-            tableBody.appendChild(row);
-        }
-
-        var namaLahanDiv = document.getElementById(`namaLahanDiv${counter}`);
-        namaLahanDiv.textContent = "Lahan: " + namaLahan;
-        namaLahanDiv.style.fontWeight = "bold";
-        namaLahanDiv.style.marginBottom = "10px";
+        })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     }
 
     function resetCell() {
@@ -612,7 +548,7 @@
         }
     }
 
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', function (event) {
         var hapusButton = document.getElementById("hapusButton");
 
         if (!hapusButton.contains(event.target) && !event.target.classList.contains('cell') && !event.target
@@ -622,93 +558,60 @@
         }
     });
 
-    function simpanLahan() {
-        var inputIdLahan = document.getElementById("EinputIdLahan").value;
-        var inputNamaLahan = document.getElementById("EinputNamaLahan").value;
-        var inputBaris = parseInt(document.getElementById("EinputBaris").value);
-        var inputKolom = parseInt(document.getElementById("EinputKolom").value);
+    function ubahLahan() {
+        var idLahan = document.getElementById('EinputIdLahan').value;
+        var enamaLahan = document.getElementById('EinputNamaLahan').value;
+        var ejumlahBaris = document.getElementById('EinputBaris').value;
+        var ejumlahKolom = document.getElementById('EinputKolom').value;
 
-        if (!isNaN(inputBaris) && !isNaN(inputKolom) && inputBaris > 0 && inputKolom > 0 && inputBaris <= 16 &&
-            inputKolom <= 26) {
-            var cardToUpdate = document.getElementById(inputIdLahan);
-
-            if (cardToUpdate) {
-                var confirmation = confirm(
-                    "Tindakan ini akan mengatur ulang semua data dari Lahan yang dipilih. Apakah Anda ingin melanjutkan?"
-                    );
-                if (confirmation) {
-                    document.getElementById("dateTimePicker").value = "";
-                    document.getElementById("actionPicker").value = "";
-
-                    var tableBody = cardToUpdate.querySelector(`#tableBody${inputIdLahan}`);
-                    tableBody.innerHTML = '';
-
-                    var cellWidth = 100 / inputKolom + "%";
-                    var cellHeight = 100 / inputBaris + "%";
-                    for (var i = 1; i <= inputBaris; i++) {
-                        var row = document.createElement("tr");
-                        for (var j = 1; j <= inputKolom; j++) {
-                            var cell = document.createElement("td");
-                            cell.className = "cell";
-                            cell.style.backgroundColor = "white";
-                            cell.style.border = "3px solid grey";
-                            cell.style.width = cellWidth;
-                            cell.style.height = cellHeight;
-                            cell.style.overflow = "hidden";
-                            cell.style.lineHeight = cellHeight;
-                            cell.style.padding = "0";
-                            cell.style.margin = "0";
-
-                            cell.setAttribute('data-width', cell.clientWidth + 'px');
-                            cell.setAttribute('data-height', cell.clientHeight + 'px');
-
-                            cell.setAttribute('data-row', i);
-                            cell.setAttribute('data-col', j);
-
-                            cell.addEventListener("click", function() {
-                                this.style.backgroundColor = activeColor;
-                                this.style.width = cellWidth;
-                                this.style.height = cellHeight;
-
-                                selectCell(this);
-                            });
-
-                            row.appendChild(cell);
-                        }
-                        tableBody.appendChild(row);
-                    }
-
-                    var namaLahanDiv = cardToUpdate.querySelector(`#namaLahanDiv${inputIdLahan}`);
-                    namaLahanDiv.textContent = "Lahan: " + inputNamaLahan;
-                }
-            } else {
-                alert("ID Lahan tidak ditemukan");
-            }
-
-            document.getElementById("formUbah").style.display = "none";
-        } else {
+        var data = {
+            _token: '{{ csrf_token() }}',
+            idLahan: idLahan,
+            namaLahan: enamaLahan,
+            jumlahBaris: ejumlahBaris,
+            jumlahKolom: ejumlahKolom,
+        };
+        if (isNaN(ejumlahBaris) || isNaN(ejumlahKolom) || ejumlahBaris < 1 || ejumlahBaris > 16 || ejumlahKolom < 1 || ejumlahKolom > 26) {
             alert("Harap masukkan nilai yang valid untuk baris (maksimum 16) dan kolom (maksimum 26)");
-        }
-    }
-
-    function konfirmasiHapus(cardId) {
-        if (cardId) {
-            var konfirmasi = confirm("Apakah Anda yakin ingin menghapus Lahan dengan ID " + cardId + "?");
-
-            if (konfirmasi) {
-                var cardToDelete = document.getElementById(cardId);
-
-                if (cardToDelete) {
-                    cardToDelete.remove();
-                    alert("Lahan dengan ID " + cardId + " telah dihapus");
-                } else {
-                    alert("Penghapusan dibatalkan");
+        } else if (confirm("Tindakan ini akan mengatur ulang semua data dari Lahan yang dipilih. Apakah Anda ingin melanjutkan?")) {
+            location.reload();
+            fetch('/update-lahan', {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
-            }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Error');
+                    }
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert(data.success);
+                    } else if (data.error) {
+                        alert(data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         }
     }
 
-    document.getElementById("tambahLahanButton").addEventListener("click", function() {
+    function submitDeleteForm(id) {
+        var confirmDelete = confirm("Anda yakin ingin menghapus lahan ini?");
+
+        if (confirmDelete) {
+            document.getElementById(`deleteForm${id}`).submit();
+        }
+    }
+
+    document.getElementById("tambahLahanButton").addEventListener("click", function () {
         var formLahan = document.getElementById("formLahan");
         if (formLahan.style.display === "none" || formLahan.style.display === "") {
             formLahan.style.display = "block";
@@ -718,7 +621,7 @@
         }
     });
 
-    document.getElementById("UbahLahanButton").addEventListener("click", function() {
+    document.getElementById("UbahLahanButton").addEventListener("click", function () {
         var formUbah = document.getElementById("formUbah");
         if (formUbah.style.display === "none" || formUbah.style.display === "") {
             formUbah.style.display = "block";
@@ -741,25 +644,5 @@
             contentElement.classList.remove('visible-content');
             contentElement.classList.add('hidden-content');
         }
-    }
-
-    function simpanData() {
-        var tabelLahanContainer = document.getElementById("tabelLahanContainer").innerHTML;
-
-        localStorage.setItem('tabelLahanData', tabelLahanContainer);
-
-        alert('Data telah disimpan ke penyimpanan lokal.');
-    }
-
-    window.onload = function() {
-        var savedData = localStorage.getItem('tabelLahanData');
-        if (savedData) {
-            document.getElementById("tabelLahanContainer").innerHTML = savedData;
-        }
-    }
-
-    function removeSavedData() {
-        localStorage.removeItem('tabelLahanData');
-        alert('Saved data has been removed.');
     }
 </script>
