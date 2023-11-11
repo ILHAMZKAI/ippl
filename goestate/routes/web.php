@@ -10,6 +10,7 @@ use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\ResetPassword;
 use App\Http\Controllers\ChangePassword;
 use App\Http\Controllers\LahanController;
+use App\Http\Controllers\MarkController;
 
 
 Route::get('/', function () {
@@ -23,6 +24,8 @@ Route::get('/garden-management', [LahanController::class, 'index'])->name('garde
 Route::post('/garden-management', [LahanController::class, 'create'])->name('create-lahan');
 Route::post('/delete-lahan/{id}', [LahanController::class, 'delete'])->name('delete-lahan');
 Route::post('/update-lahan', [LahanController::class, 'updateLahan'])->name('update-lahan');
+Route::post('/saveSelectedCells', [MarkController::class, 'saveSelectedCells']);
+Route::get('/getMarksData/{idLahan}', [MarkController::class, 'getMarksData']);
 Route::get('/register', [RegisterController::class, 'create'])->middleware('guest')->name('register');
 Route::post('/register', [RegisterController::class, 'store'])->middleware('guest')->name('register.perform');
 Route::get('/login', [LoginController::class, 'show'])->middleware('guest')->name('login');

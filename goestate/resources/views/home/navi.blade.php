@@ -29,18 +29,18 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav ms-auto">
-                    <a href="#home" class="nav-item nav-link active">Home</a>
+                    <a href="#home" class="nav-item nav-link">Home</a>
                     <a href="#about-us" class="nav-item nav-link">About</a>
                     <a href="#services" class="nav-item nav-link">Services</a>
                     <a href="#faq" class="nav-item nav-link">FAQs</a>
 
                     @if (Route::has('login'))
-                        @auth
-                            <a href="{{ route('home') }}" class="nav-item nav-link">Dashboard</a>
-                        @else
-                            <a href="{{ route('login') }}" class="nav-item nav-link">Login</a>
-                            <a href="{{ route('register') }}" class="nav-item nav-link">Register</a>
-                        @endauth
+                    @auth
+                    <a href="{{ route('home') }}" class="nav-item nav-link">Dashboard</a>
+                    @else
+                    <a href="{{ route('login') }}" class="nav-item nav-link">Login</a>
+                    <a href="{{ route('register') }}" class="nav-item nav-link">Register</a>
+                    @endauth
                     @endif
                 </div>
             </div>

@@ -15,11 +15,11 @@
 @endif
 <div class="row mx-4 me-4-1 mb-4">
     <div class="col-12 mx-1">
-        <div class="alert1 alert-light"><strong>Perkebunan</strong> @csrf <button class="btn btn-gm1 ms-0 mx-auto mt-n2"
-                onclick="toggleFloatingDiv()">Alat</button>
-            <button class="btn btn-gm1 ms-0 mx-3 mt-n2" onclick="simpanData()">Simpan</button> <button class="btn btn-gm1
-            ms-0 mx-3 mt-n2" id="UbahLahanButton">Ubah Lahan</button> <button class="btn btn-gm1 ms-0 mx-3 mt-n2"
-                id="tambahLahanButton">Tambah Lahan</button>
+        <div class="alert1 alert-light"><strong>Perkebunan</strong> @csrf
+            <button class="btn btn-gm1 ms-0 mx-auto mt-n2" onclick="toggleFloatingDiv()">Alat</button>
+            <button class="btn btn-gm1 ms-0 mx-3 mt-n2" onclick="simpanData()">Simpan</button>
+            <button class="btn btn-gm1 ms-0 mx-3 mt-n2" id="UbahLahanButton">Ubah Lahan</button>
+            <button class="btn btn-gm1 ms-0 mx-3 mt-n2" id="tambahLahanButton">Tambah Lahan</button>
         </div>
     </div>
 </div>
@@ -40,16 +40,9 @@
                 <button class="btn btn-dark ms-3 px-4-1">Info</button>
             </div>
             <div>
-                <button class="btn btn-dark px-5" id="timerButton" onclick="setTimer()">Tambah Waktu</button>
-                <div id="dateAndActionPicker" style="display: none;">
-                    <label for="dateTimePicker">Pilih Tanggal dan Waktu:</label>
-                    <input type="datetime-local" id="dateTimePicker">
-                    <label for="actionPicker">Pilih Aksi:</label>
-                    <select id="actionPicker">
-                        <option value="Fertilization">Pemupukan</option>
-                        <option value="Harvest">Panen</option>
-                    </select>
-                    <button class="btn btn-success" onclick="confirmDateTimeAction()">OK</button>
+                <button class="btn btn-dark px-5" id="markButton" onclick="setMark()">Tandai Lahan</button>
+                <div id="markActionPicker" style="display: none;">
+                    <button class="btn btn-success" onclick="refreshButton()">OK</button>
                 </div>
             </div>
             <div>
@@ -165,46 +158,12 @@ $cardCounter = 0;
                                         <div class="table-container"
                                             style="max-height: auto; overflow: auto; transform: scale(1);">
                                             <table class="table" id="contBody{{ $cardCounter }}">
-                                                <tbody id="tableBody{{ $cardCounter }}">
+                                                @csrf
+                                                <tbody id="tableBody{{ $cardCounter }}"
+                                                    onclick="saveSelectedCellsToDatabase({{ $cardCounter }}, {{ $lahan->id }})">
+                                                    @include('pages.script')
                                                     <script>
                                                         buatTabel("{{ $lahan->id }}", "{{ $lahan->nama }}", {{ $lahan-> jumlah_baris }}, {{ $lahan-> jumlah_kolom }}, {{ $cardCounter }});
-                                                        function buatTabel(id, namaLahan, baris, kolom, counter) {
-                                                            var tableBody = document.getElementById(`tableBody${counter}`);
-                                                            tableBody.innerHTML = '';
-                                                            var cellWidth = 100 / kolom + "%";
-                                                            var cellHeight = 100 / baris + "%";
-                                                            for (var i = 1; i <= baris; i++) {
-                                                                var row = document.createElement("tr");
-                                                                for (var j = 1; j <= kolom; j++) {
-                                                                    var cell = document.createElement("td");
-                                                                    cell.className = "cell";
-                                                                    cell.style.backgroundColor = "white";
-                                                                    cell.style.border = "3px solid grey";
-                                                                    cell.style.width = cellWidth;
-                                                                    cell.style.height = cellHeight;
-                                                                    cell.style.overflow = "hidden";
-                                                                    cell.style.lineHeight = cellHeight;
-                                                                    cell.style.padding = "0";
-                                                                    cell.style.margin = "0";
-                                                                    cell.setAttribute('data-width', cell.clientWidth + 'px');
-                                                                    cell.setAttribute('data-height', cell.clientHeight + 'px');
-                                                                    cell.setAttribute('data-row', i);
-                                                                    cell.setAttribute('data-col', j);
-                                                                    cell.addEventListener("click", function () {
-                                                                        this.style.backgroundColor = activeColor;
-                                                                        this.style.width = cellWidth;
-                                                                        this.style.height = cellHeight;
-                                                                        selectCell(this);
-                                                                    });
-                                                                    row.appendChild(cell);
-                                                                }
-                                                                tableBody.appendChild(row);
-                                                            }
-                                                            var namaLahanDiv = document.getElementById(`namaLahanDiv${counter}`);
-                                                            namaLahanDiv.textContent = "Lahan: " + namaLahan;
-                                                            namaLahanDiv.style.fontWeight = "bold";
-                                                            namaLahanDiv.style.marginBottom = "10px";
-                                                        }
                                                     </script>
                                                 </tbody>
                                             </table>

@@ -4,11 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Models\Lahan;
+use App\Models\Data;
 
 use Illuminate\Http\Request;
 
 class LahanController extends Controller
 {
+    public function index()
+    {
+        $userId = auth()->id();
+        $lahanData = Lahan::where('user_id', $userId)->get();
+
+        return view('/pages/garden-management', compact('lahanData'));
+    }
     public function create(Request $request)
     {
         $namaLahan = $request->input('namaLahan');
@@ -32,14 +40,6 @@ class LahanController extends Controller
 
         return redirect('/garden-management')->with('success', 'Lahan berhasil dibuat');
     }
-    public function index()
-    {
-        $userId = auth()->id();
-        $lahanData = Lahan::where('user_id', $userId)->get();
-
-        return view('/pages/garden-management', compact('lahanData'));
-    }
-
     public function delete($id)
     {
         $userId = auth()->id();

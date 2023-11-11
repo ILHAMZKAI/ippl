@@ -119,25 +119,25 @@
     var cardCounter = 1;
     var activeColor = "none";
     var isSelectedCells = new Map();
-    var isDateAndAction = false;
+    var isAction = false;
     var isNotes = false;
     var totalWeights = {};
 
-    function setTimer() {
-        var dateAndActionPicker = document.getElementById('dateAndActionPicker');
-        if (dateAndActionPicker.style.display === 'none' || dateAndActionPicker.style.display === '' || NotesPicker
+    function setMark() {
+        var markActionPicker = document.getElementById('markActionPicker');
+        if (markActionPicker.style.display === 'none' || markActionPicker.style.display === '' || NotesPicker
             .style.display === 'block') {
-            dateAndActionPicker.style.display = 'block';
-            timerButton.style.backgroundColor = "#8392ab";
-            isDateAndAction = true;
+            markActionPicker.style.display = 'block';
+            markButton.style.backgroundColor = "#8392ab";
+            isAction = true;
 
             NotesPicker.style.display = 'none';
             catatanButton.style.backgroundColor = "";
             isNotes = false;
         } else {
-            dateAndActionPicker.style.display = 'none';
-            timerButton.style.backgroundColor = "";
-            isDateAndAction = false;
+            markActionPicker.style.display = 'none';
+            markButton.style.backgroundColor = "";
+            isAction = false;
             isSelectedCells.forEach(function (selectedCell) {
                 selectedCell.style.backgroundColor = 'white';
                 var cellContent = selectedCell.textContent;
@@ -152,152 +152,63 @@
     }
 
     function tutup() {
-        var dateAndActionPicker = document.getElementById('dateAndActionPicker');
-        dateAndActionPicker.style.display = 'none';
-        timerButton.style.backgroundColor = "";
-        isDateAndAction = false;
+        var markActionPicker = document.getElementById('markActionPicker');
+        markActionPicker.style.display = 'none';
+        markButton.style.backgroundColor = "";
+        isAction = false;
         isSelectedCells.clear();
     }
 
-    function confirmDateTimeAction() {
-        var dateTimePicker = document.getElementById('dateTimePicker');
-        var actionPicker = document.getElementById('actionPicker');
-        var action = actionPicker.value;
-        if (!action) {
-            alert('Pilih aksi terlebih dahulu');
-            return;
-        }
+    function refreshButton() {
+        location.reload(true);
+    }
 
-        if (!dateTimePicker.value) {
-            alert('Pilih waktu dan tanggal terlebih dahulu');
-            return;
-        }
-
-        if (isSelectedCells.size === 0) {
-            alert('Pilih satu atau lebih kolom terlebih dahulu');
-            return;
-        }
-
-        var selectedDateTime = new Date(dateTimePicker.value);
-
-        isSelectedCells.forEach(function (selectedCell) {
-            if (selectedCell.getAttribute('data-timer-set') === 'true') {
-                if (confirm('Waktu sudah diterapkan disini. Apakah Anda ingin mengubahnya?')) {
-                    isSelectedCells.forEach(function (selectedCell) {
-                        resetCellTimer(selectedCell);
-                    });
-                } else {
-                    isSelectedCells.forEach(function (selectedCell) {
-                        var spanText = selectedCell.querySelector('span').textContent;
-                        if (spanText === 'Pemupukan') {
-                            selectedCell.style.backgroundColor = 'yellow';
-                        } else if (spanText === 'Panen') {
-                            selectedCell.style.backgroundColor = 'green';
-                        } else {
-                            selectedCell.style.backgroundColor = 'white';
-                        }
-                    });
-                    tutup();
+    function selectCell(cell) {
+        if (isAction == true) {
+            if (isSelectedCells.has(cell)) {
+                isSelectedCells.delete(cell);
+                resetCellTimer(cell);
+            } else {
+                if (isAction == true) {
+                    cell.style.backgroundColor = 'cyan';
+                    isSelectedCells.set(cell, cell);
                 }
             }
+        }
+    }
 
+    function saveSelectedCellsToDatabase(cardCounter, idlahan) {
+        if (isAction == true) {
+            const url = '/saveSelectedCells';
 
-            originalText = selectedCell.textContent;
+            const selectedCellsData = Array.from(isSelectedCells.values()).map(cell => ({
+                idlahan: idlahan,
+                id_user: '{{ Auth::id() }}',
+                data_col: cell.getAttribute('data-col'),
+                data_row: cell.getAttribute('data-row'),
+                warna: 'red'
+            }));
 
-            if (selectedCell.getAttribute('data-timer')) {
-                clearTimeout(selectedCell.getAttribute('data-timer'));
-            }
+            console.log('Selected Cells Data:', selectedCellsData);
 
-            if (action === 'Fertilization' || action === 'Harvest') {
-                var tableBodyId = selectedCell.closest('tbody').id;
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+                body: JSON.stringify({ selectedCells: selectedCellsData }),
+            })
 
-                if (!totalWeights[tableBodyId]) {
-                    totalWeights[tableBodyId] = 0;
-                }
-                selectedCell.style.backgroundColor = 'red';
-                var timer = setTimeout(function () {
-                    selectedCell.style.backgroundColor = (action === 'Fertilization') ? 'yellow' :
-                        'green';
-                    selectedCell.setAttribute('data-timer-set', 'true');
-
-                    var container = document.createElement('div');
-
-                    var textElement = document.createElement('span');
-                    textElement.textContent = (action === 'Fertilization') ? 'Pemupukan' : 'Panen';
-                    textElement.style.color = "#000";
-                    textElement.style.fontWeight = "bold";
-                    textElement.classList.add('selected-cell');
-                    textElement.style.marginTop = '10px';
-
-                    var inputText = document.createElement('input');
-                    inputText.type = 'text';
-                    inputText.style.marginTop = '4px';
-                    inputText.style.border = "none";
-                    inputText.style.background = "none";
-                    inputText.style.outline = "none";
-                    inputText.style.textAlign = "center";
-                    inputText.style.width = "90%";
-                    inputText.style.height = "20%";
-                    inputText.style.color = "#066";
-                    inputText.style.fontWeight = "bold";
-                    inputText.placeholder = 'Catatan';
-                    inputText.addEventListener('input', function (event) {
-                        var input = event.target;
-                        var inputText = input.value;
-                        var previousInput = input.getAttribute('data-previous-input') || '';
-
-                        var addedMatches = inputText.match(/\d+/g);
-                        var previousMatches = previousInput.match(/\d+/g);
-
-                        var addedTotal = 0;
-                        var previousTotal = 0;
-
-                        if (addedMatches) {
-                            for (var i = 0; i < addedMatches.length; i++) {
-                                var weight = parseInt(addedMatches[i], 10);
-                                if (!isNaN(weight)) {
-                                    addedTotal += weight;
-                                }
-                            }
-                        }
-
-                        if (previousMatches) {
-                            for (var i = 0; i < previousMatches.length; i++) {
-                                var weight = parseInt(previousMatches[i], 10);
-                                if (!isNaN(weight)) {
-                                    previousTotal += weight;
-                                }
-                            }
-                        }
-
-                        totalWeights[tableBodyId] += addedTotal - previousTotal;
-
-                        var tableBodyIds = selectedCell.closest('tbody').id;
-                        var idWithoutPrefix = tableBodyIds.substring('tableBody'.length);
-                        var totalWeightElement = document.getElementById('totalWeight' +
-                            idWithoutPrefix);
-                        totalWeightElement.textContent = totalWeights[tableBodyId];
-
-                        input.setAttribute('data-previous-input', inputText);
-                    });
-                    inputText.addEventListener("input", function () {
-                        if (this.value.length > 5) {
-                            this.value = this.value.slice(0, 5);
-                        }
-                    });
-                    container.appendChild(textElement);
-                    container.appendChild(inputText);
-
-                    selectedCell.innerHTML = '';
-                    selectedCell.appendChild(container);
-                }, selectedDateTime - new Date());
-                selectedCell.setAttribute('data-timer', timer);
-            }
-
-            selectedCell.textContent = selectedDateTime.toLocaleString();
-        });
-
-        tutup();
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+        isSelectedCells.clear();
     }
 
     function confirmNotes() {
@@ -368,36 +279,77 @@
         isSelectedCells.clear();
     }
 
+    function updateTabel(data, idlahan, counter) {
+        data.forEach(function (item) {
+            var data_col = item.data_col;
+            var data_row = item.data_row;
+            var warna = item.warna;
 
+            var cell = document.querySelector(`#tableBody${counter} [data-row="${data_row}"][data-col="${data_col}"]`);
 
-    function selectCell(cell) {
-        if (isClearingEnabled) {
-            cell.style.backgroundColor = 'white';
-            cell.textContent = '';
-            resetCellTimer(cell);
-        } else if (isDateAndAction == true) {
-            if (isSelectedCells.has(cell)) {
-                isSelectedCells.delete(cell);
-                resetCellTimer(cell);
+            if (cell) {
+                cell.style.backgroundColor = warna;
             } else {
-                if (isDateAndAction == true) {
-                    cell.style.backgroundColor = 'cyan';
-                    isSelectedCells.set(cell, cell);
-                }
+                console.error('Sel tidak ditemukan.');
             }
-        } else if (isNotes == true) {
-            if (isSelectedCells.has(cell)) {
-                cell.textContent = notesInput.value;
-                isSelectedCells.delete(cell);
-                resetCellTimer(cell);
-            } else {
-                if (isNotes == true) {
-                    cell.style.backgroundColor = 'cyan';
-                    isSelectedCells.set(cell, cell);
-                }
-            }
-        }
+        });
     }
+
+    function buatTabel(id, namaLahan, baris, kolom, counter) {
+        var tableBody = document.getElementById(`tableBody${counter}`);
+        tableBody.innerHTML = '';
+        var cellWidth = 100 / kolom + "%";
+        var cellHeight = 100 / baris + "%";
+        var idlahan;
+
+        function ambilDataDariDatabase() {
+            var url = `/getMarksData/${id}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    idlahan = data[0].idLahan;
+
+                    updateTabel(data, idlahan, counter);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        for (var i = 1; i <= baris; i++) {
+            var row = document.createElement("tr");
+            for (var j = 1; j <= kolom; j++) {
+                var cell = document.createElement("td");
+                cell.className = "cell";
+                cell.style.backgroundColor = "white";
+                cell.style.border = "3px solid grey";
+                cell.style.width = cellWidth;
+                cell.style.height = cellHeight;
+                cell.style.overflow = "hidden";
+                cell.style.lineHeight = cellHeight;
+                cell.style.padding = "0";
+                cell.style.margin = "0";
+                cell.setAttribute('data-width', cell.clientWidth + 'px');
+                cell.setAttribute('data-height', cell.clientHeight + 'px');
+                cell.setAttribute('data-row', i);
+                cell.setAttribute('data-col', j);
+                cell.addEventListener("click", function () {
+                    this.style.backgroundColor = activeColor;
+                    this.style.width = cellWidth;
+                    this.style.height = cellHeight;
+                    selectCell(this);
+                });
+                row.appendChild(cell);
+            }
+            tableBody.appendChild(row);
+        }
+
+        ambilDataDariDatabase();
+        var namaLahanDiv = document.getElementById(`namaLahanDiv${counter}`);
+        namaLahanDiv.textContent = "Lahan: " + namaLahan;
+        namaLahanDiv.style.fontWeight = "bold";
+        namaLahanDiv.style.marginBottom = "10px";
+    }
+
 
     function resetCellTimer(cell) {
         if (cell.getAttribute('data-timer')) {
@@ -411,15 +363,15 @@
 
     function catatan() {
         var NotesPicker = document.getElementById('NotesPicker');
-        if (NotesPicker.style.display === 'none' || NotesPicker.style.display === '' || dateAndActionPicker.style
+        if (NotesPicker.style.display === 'none' || NotesPicker.style.display === '' || markActionPicker.style
             .display === 'block') {
             NotesPicker.style.display = 'block';
             catatanButton.style.backgroundColor = "#8392ab";
             isNotes = true;
 
-            dateAndActionPicker.style.display = 'none';
-            timerButton.style.backgroundColor = "";
-            isDateAndAction = false;
+            markActionPicker.style.display = 'none';
+            markButton.style.backgroundColor = "";
+            isAction = false;
         } else {
             NotesPicker.style.display = 'none';
             catatanButton.style.backgroundColor = "";
