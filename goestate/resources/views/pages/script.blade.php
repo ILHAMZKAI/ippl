@@ -123,6 +123,93 @@
     var isAction = false;
     var isNotes = false;
     var totalWeights = {};
+    var countdownIntervals = {};
+
+    function startCountdown(cardCounter, lahanId) {
+        clearInterval(countdownIntervals[cardCounter]);
+
+        var inputTime = document.getElementById(`inputTime${cardCounter}`).value;
+        var userTimeElement = document.getElementById(`userTime${cardCounter}`);
+        var countdownElement = document.getElementById(`countdown${cardCounter}`);
+
+        var isValidTime = validateTimeFormat(inputTime);
+
+        if (!isValidTime) {
+            alert("Invalid time format. Please use the format HH:mm:ss.");
+            return;
+        }
+
+        var userTimeInSeconds = convertToSeconds(inputTime);
+
+        userTimeElement.textContent = inputTime;
+
+        localStorage.setItem(`userTime${cardCounter}`, inputTime);
+        localStorage.setItem(`remainingTime${cardCounter}`, userTimeInSeconds);
+
+        countdownIntervals[cardCounter] = setInterval(function () {
+            userTimeInSeconds = localStorage.getItem(`remainingTime${cardCounter}`);
+
+            userTimeInSeconds--;
+
+            formatted = formatTime(userTimeInSeconds)
+
+            countdownElement.textContent = formatted;
+
+            if (userTimeInSeconds <= 0) {
+                clearInterval(countdownIntervals[cardCounter]);
+                countdownElement.textContent = "Time's up!";
+            }
+
+            localStorage.setItem(`remainingTime${cardCounter}`, userTimeInSeconds);
+        }, 1000);
+    }
+
+    function validateTimeFormat(timeString) {
+        var regex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/;
+        return regex.test(timeString);
+    }
+
+    function convertToSeconds(timeString) {
+        var parts = timeString.split(":");
+        return parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseInt(parts[2]);
+    }
+
+    function formatTime(seconds) {
+        var hours = Math.floor(seconds / 3600);
+        var minutes = Math.floor((seconds % 3600) / 60);
+        var remainingSeconds = seconds % 60;
+
+        return pad(hours) + ":" + pad(minutes) + ":" + pad(remainingSeconds);
+    }
+
+    function pad(num) {
+        return num < 10 ? "0" + num : num;
+    }
+
+    window.onload = function () {
+        @foreach($lahanData as $lahan)
+        var cardCounter = {{ $loop-> index + 1
+    }};
+    var remainingTimeInSeconds = parseInt(localStorage.getItem(`remainingTime${cardCounter}`)) || 0;
+
+    if (remainingTimeInSeconds > 0) {
+        document.getElementById(`inputTime${cardCounter}`).value = formatTime(remainingTimeInSeconds);
+        startCountdown(cardCounter, '{{ $lahan->id }}');
+    }
+    @endforeach
+                }
+
+    window.addEventListener("unload", function () {
+        @foreach($lahanData as $lahan)
+        var cardCounter = {{ $loop-> index + 1
+    }};
+    var remainingTime = countdownIntervals[cardCounter] ?
+        localStorage.getItem(`remainingTime${cardCounter}`) :
+        0;
+
+    localStorage.setItem(`remainingTime${cardCounter}`, remainingTime);
+    @endforeach
+                });
 
     function setMark() {
         var markActionPicker = document.getElementById('markActionPicker');
