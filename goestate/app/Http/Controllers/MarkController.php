@@ -47,4 +47,23 @@ class MarkController extends Controller
             ], 404);
         }
     }
+
+    public function deleteSelectedCells(Request $request)
+    {
+        $request->validate([
+            'idlahan' => 'required',
+            'id_user' => 'required',
+            'data_col' => 'required',
+            'data_row' => 'required',
+        ]);
+
+        Mark::where([
+            'idlahan' => $request->input('idlahan'),
+            'id_user' => $request->input('id_user'),
+            'data_col' => $request->input('data_col'),
+            'data_row' => $request->input('data_row'),
+        ])->delete();
+
+        return response()->json(['message' => 'Selected cells deleted successfully']);
+    }
 }

@@ -119,6 +119,7 @@
     var cardCounter = 1;
     var activeColor = "none";
     var isSelectedCells = new Map();
+    var isClearingEnabled = false;
     var isAction = false;
     var isNotes = false;
     var totalWeights = {};
@@ -174,8 +175,110 @@
                     isSelectedCells.set(cell, cell);
                 }
             }
+        } else if (isClearingEnabled == true) {
+            if (isSelectedCells.has(cell)) {
+                isSelectedCells.delete(cell);
+                cell.style.backgroundColor = 'white';
+            } else {
+                if (isClearingEnabled == true) {
+                    cell.style.backgroundColor = 'white';
+                    isSelectedCells.set(cell, cell);
+                }
+            }
         }
     }
+
+    function handleCellClick(cardCounter, idLahan) {
+        if (isAction == true) {
+            saveSelectedCellsToDatabase(cardCounter, idLahan);
+        } else if (isClearingEnabled == true) {
+            deleteSelectedCellsFromDatabase(cardCounter, idLahan);
+        }
+    }
+
+    function hapusSelectedCell() {
+        isClearingEnabled = true;
+
+        var hapusButton = document.getElementById("hapusButton");
+
+        if (isClearingEnabled) {
+            hapusButton.style.backgroundColor = "#8392ab";
+        } else {
+            hapusButton.style.backgroundColor = "";
+        }
+    }
+
+    function saveSelectedCellsToDatabase(cardCounter, idlahan) {
+        if (isAction == true) {
+            const url = '/saveSelectedCells';
+
+            const selectedCellsData = Array.from(isSelectedCells.values()).map(cell => ({
+                idlahan: idlahan,
+                id_user: '{{ Auth::id() }}',
+                data_col: cell.getAttribute('data-col'),
+                data_row: cell.getAttribute('data-row'),
+                warna: 'red'
+            }));
+
+            console.log('Selected Cells Data:', selectedCellsData);
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+                body: JSON.stringify({ selectedCells: selectedCellsData }),
+            })
+
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                })
+        }
+        isSelectedCells.clear();
+    }
+
+    function deleteSelectedCellsFromDatabase(cardCounter, idlahan) {
+        if (isClearingEnabled == true) {
+            const url = '/deleteSelectedCells';
+
+            const selectedCellsData = Array.from(isSelectedCells.values()).map(cell => ({
+                idlahan: idlahan,
+                id_user: '{{ Auth::id() }}',
+                data_col: cell.getAttribute('data-col'),
+                data_row: cell.getAttribute('data-row'),
+            }));
+
+            console.log('Selected Cells Data:', selectedCellsData);
+
+            const queryParams = selectedCellsData.map(cellData => `idlahan=${cellData.idlahan}&id_user=${cellData.id_user}&data_col=${cellData.data_col}&data_row=${cellData.data_row}`).join('&');
+
+            fetch(`${url}?${queryParams}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+            })
+
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                })
+        }
+        isSelectedCells.clear();
+    }
+
+    document.addEventListener('click', function (event) {
+        var hapusButton = document.getElementById("hapusButton");
+
+        if (!hapusButton.contains(event.target) && !event.target.classList.contains('cell') && !event.target
+            .classList.contains('selected-cell')) {
+            isClearingEnabled = false;
+            hapusButton.style.backgroundColor = "";
+        }
+    });
 
     function saveSelectedCellsToDatabase(cardCounter, idlahan) {
         if (isAction == true) {
@@ -485,30 +588,6 @@
             }
         }
     }
-
-    let isClearingEnabled = false;
-
-    function hapusSelectedCell() {
-        isClearingEnabled = !isClearingEnabled;
-
-        var hapusButton = document.getElementById("hapusButton");
-
-        if (isClearingEnabled) {
-            hapusButton.style.backgroundColor = "#8392ab";
-        } else {
-            hapusButton.style.backgroundColor = "";
-        }
-    }
-
-    document.addEventListener('click', function (event) {
-        var hapusButton = document.getElementById("hapusButton");
-
-        if (!hapusButton.contains(event.target) && !event.target.classList.contains('cell') && !event.target
-            .classList.contains('selected-cell')) {
-            isClearingEnabled = false;
-            hapusButton.style.backgroundColor = "";
-        }
-    });
 
     function ubahLahan() {
         var idLahan = document.getElementById('EinputIdLahan').value;

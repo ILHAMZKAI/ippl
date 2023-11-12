@@ -26,6 +26,7 @@ Route::post('/delete-lahan/{id}', [LahanController::class, 'delete'])->name('del
 Route::post('/update-lahan', [LahanController::class, 'updateLahan'])->name('update-lahan');
 Route::post('/saveSelectedCells', [MarkController::class, 'saveSelectedCells']);
 Route::get('/getMarksData/{idLahan}', [MarkController::class, 'getMarksData']);
+Route::delete('/deleteSelectedCells', [MarkController::class, 'deleteSelectedCells']);
 Route::get('/register', [RegisterController::class, 'create'])->middleware('guest')->name('register');
 Route::post('/register', [RegisterController::class, 'store'])->middleware('guest')->name('register.perform');
 Route::get('/login', [LoginController::class, 'show'])->middleware('guest')->name('login');
