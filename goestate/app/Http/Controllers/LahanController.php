@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Models\Lahan;
-use App\Models\Data;
-
 use Illuminate\Http\Request;
 
 class LahanController extends Controller

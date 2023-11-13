@@ -11,6 +11,7 @@ use App\Http\Controllers\ResetPassword;
 use App\Http\Controllers\ChangePassword;
 use App\Http\Controllers\LahanController;
 use App\Http\Controllers\MarkController;
+use App\Http\Controllers\TimerController;
 
 
 Route::get('/', function () {
@@ -27,6 +28,8 @@ Route::post('/update-lahan', [LahanController::class, 'updateLahan'])->name('upd
 Route::post('/saveSelectedCells', [MarkController::class, 'saveSelectedCells']);
 Route::get('/getMarksData/{idLahan}', [MarkController::class, 'getMarksData']);
 Route::delete('/deleteSelectedCells', [MarkController::class, 'deleteSelectedCells']);
+Route::delete('/deleteAllCells', [MarkController::class, 'deleteAllCells']);
+Route::post('/saveActionTimer', [TimerController::class, 'saveActionTimer']);
 Route::get('/register', [RegisterController::class, 'create'])->middleware('guest')->name('register');
 Route::post('/register', [RegisterController::class, 'store'])->middleware('guest')->name('register.perform');
 Route::get('/login', [LoginController::class, 'show'])->middleware('guest')->name('login');

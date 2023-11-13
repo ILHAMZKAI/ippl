@@ -1,9 +1,9 @@
 <script>
     var autoHideAlerts = document.querySelectorAll('.auto-hide-alert');
 
-    autoHideAlerts.forEach(function(autoHideAlert) {
+    autoHideAlerts.forEach(function (autoHideAlert) {
         if (autoHideAlert) {
-            setTimeout(function() {
+            setTimeout(function () {
                 autoHideAlert.style.display = 'none';
             }, 6000);
         }
@@ -59,7 +59,7 @@
             minDiv.style.top = newY + "px";
         });
 
-        minDiv.addEventListener("click", function() {
+        minDiv.addEventListener("click", function () {
             if (!isDragging) {
                 floatingDivVisible = true;
                 floatingDiv.style.display = "block";
@@ -67,7 +67,7 @@
             }
         });
 
-        minDiv.addEventListener("mousedown", function(event) {
+        minDiv.addEventListener("mousedown", function (event) {
             event.preventDefault();
         });
     }
@@ -123,109 +123,39 @@
     var isAction = false;
     var isNotes = false;
     var totalWeights = {};
-    var countdownIntervals = {};
 
-    var countdownIntervals = {};
+    function saveActionTimer(lahanId, cardCounter, userId) {
+        var selectedAction = document.getElementById('selectAction' + cardCounter).value;
+        var dateTime = document.getElementById('dateTimePicker' + cardCounter).value;
 
-    function startCountdown(cardCounter, lahanId) {
-        clearInterval(countdownIntervals[cardCounter]);
+        var data = {
+            lahan_id: lahanId,
+            action: selectedAction,
+            date_time: dateTime,
+            iduser: userId,
+        };
 
-        var inputTime = document.getElementById(`inputTime${cardCounter}`).value;
-        var userTimeElement = document.getElementById(`userTime${cardCounter}`);
-        var countdownElement = document.getElementById(`countdown${cardCounter}`);
-
-        var isValidTime = validateTimeFormat(inputTime);
-
-        if (!isValidTime) {
-            alert("Invalid time format. Please use the format DD:HH:mm:ss.");
-            return;
-        }
-
-        var userTimeInSeconds = convertToSeconds(inputTime);
-
-        userTimeElement.textContent = inputTime;
-
-        localStorage.setItem(`userTime${cardCounter}`, inputTime);
-        localStorage.setItem(`remainingTime${cardCounter}`, userTimeInSeconds);
-
-        countdownIntervals[cardCounter] = setInterval(function() {
-            userTimeInSeconds = localStorage.getItem(`remainingTime${cardCounter}`);
-            userTimeInSeconds--;
-
-            formatted = formatTime(userTimeInSeconds)
-
-            countdownElement.textContent = formatted;
-
-            if (userTimeInSeconds <= 0) {
-                clearInterval(countdownIntervals[cardCounter]);
-                countdownElement.textContent = "Time's up!";
-            }
-
-            localStorage.setItem(`remainingTime${cardCounter}`, userTimeInSeconds);
-        }, 1000);
+        fetch('/saveActionTimer', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(responseData => {
+                console.log('Action and Timer saved successfully:', responseData);
+            })
+            .catch(error => {
+                console.error('Error saving Action and Timer:', error);
+            });
     }
-
-    function validateTimeFormat(timeString) {
-        var regex = /^((\d+):)?([0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/;
-        return regex.test(timeString);
-    }
-
-    function convertToSeconds(timeString) {
-        var parts = timeString.split(":");
-        var days = parts.length === 4 ? parseInt(parts[0]) * 24 * 3600 : 0;
-        var hours = parseInt(parts[parts.length - 3]) * 3600;
-        var minutes = parseInt(parts[parts.length - 2]) * 60;
-        var seconds = parseInt(parts[parts.length - 1]);
-        return days + hours + minutes + seconds;
-    }
-
-    function formatTime(seconds) {
-        var days = Math.floor(seconds / (24 * 3600));
-        var hours = Math.floor((seconds % (24 * 3600)) / 3600);
-        var minutes = Math.floor((seconds % 3600) / 60);
-        var remainingSeconds = seconds % 60;
-
-        return (days > 0 ? pad(days) + ":" : "") + pad(hours) + ":" + pad(minutes) + ":" + pad(remainingSeconds);
-    }
-
-    function pad(num) {
-        return num < 10 ? "0" + num : num;
-    }
-
-    window.onload = function() {
-        @foreach ($lahanData as $lahan)
-            var cardCounter = {{ $loop->index + 1 }};
-            var remainingTimeInSeconds = parseInt(localStorage.getItem(`remainingTime${cardCounter}`)) || 0;
-
-            if (remainingTimeInSeconds > 0) {
-                document.getElementById(`inputTime${cardCounter}`).value = formatTime(remainingTimeInSeconds);
-                startCountdown(cardCounter, '{{ $lahan->id }}');
-            }
-        @endforeach
-    }
-
-    window.addEventListener("unload", function() {
-        @foreach ($lahanData as $lahan)
-            var cardCounter = {{ $loop->index + 1 }};
-            var remainingTime = countdownIntervals[cardCounter] ?
-                localStorage.getItem(`remainingTime${cardCounter}`) :
-                0;
-
-            localStorage.setItem(`remainingTime${cardCounter}`, remainingTime);
-        @endforeach
-    });
-
-
-    window.addEventListener("unload", function() {
-        @foreach ($lahanData as $lahan)
-            var cardCounter = {{ $loop->index + 1 }};
-            var remainingTime = countdownIntervals[cardCounter] ?
-                localStorage.getItem(`remainingTime${cardCounter}`) :
-                0;
-
-            localStorage.setItem(`remainingTime${cardCounter}`, remainingTime);
-        @endforeach
-    });
 
     function setMark() {
         var markActionPicker = document.getElementById('markActionPicker');
@@ -242,7 +172,7 @@
             markActionPicker.style.display = 'none';
             markButton.style.backgroundColor = "";
             isAction = false;
-            isSelectedCells.forEach(function(selectedCell) {
+            isSelectedCells.forEach(function (selectedCell) {
                 selectedCell.style.backgroundColor = 'white';
                 var cellContent = selectedCell.textContent;
                 if (cellContent.includes("Pemupukan")) {
@@ -269,25 +199,11 @@
 
     function selectCell(cell) {
         if (isAction == true) {
-            if (isSelectedCells.has(cell)) {
-                isSelectedCells.delete(cell);
-                resetCellTimer(cell);
-            } else {
-                if (isAction == true) {
-                    cell.style.backgroundColor = 'cyan';
-                    isSelectedCells.set(cell, cell);
-                }
-            }
+            cell.style.backgroundColor = 'red';
+            isSelectedCells.set(cell, cell);
         } else if (isClearingEnabled == true) {
-            if (isSelectedCells.has(cell)) {
-                isSelectedCells.delete(cell);
-                cell.style.backgroundColor = 'white';
-            } else {
-                if (isClearingEnabled == true) {
-                    cell.style.backgroundColor = 'white';
-                    isSelectedCells.set(cell, cell);
-                }
-            }
+            cell.style.backgroundColor = 'white';
+            isSelectedCells.set(cell, cell);
         }
     }
 
@@ -296,18 +212,6 @@
             saveSelectedCellsToDatabase(cardCounter, idLahan);
         } else if (isClearingEnabled == true) {
             deleteSelectedCellsFromDatabase(cardCounter, idLahan);
-        }
-    }
-
-    function hapusSelectedCell() {
-        isClearingEnabled = true;
-
-        var hapusButton = document.getElementById("hapusButton");
-
-        if (isClearingEnabled) {
-            hapusButton.style.backgroundColor = "#8392ab";
-        } else {
-            hapusButton.style.backgroundColor = "";
         }
     }
 
@@ -326,15 +230,15 @@
             console.log('Selected Cells Data:', selectedCellsData);
 
             fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    },
-                    body: JSON.stringify({
-                        selectedCells: selectedCellsData
-                    }),
-                })
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+                body: JSON.stringify({
+                    selectedCells: selectedCellsData
+                }),
+            })
 
                 .then(response => response.json())
                 .then(data => {
@@ -342,6 +246,24 @@
                 })
         }
         isSelectedCells.clear();
+    }
+
+    function hapusSelectedCell() {
+        isClearingEnabled = !isClearingEnabled;
+
+        var hapusButton = document.getElementById("hapusButton");
+
+        if (isAction) {
+            markActionPicker.style.display = 'none';
+            markButton.style.backgroundColor = "";
+            isAction = false;
+        }
+
+        if (isClearingEnabled) {
+            hapusButton.style.backgroundColor = "#8392ab";
+        } else {
+            hapusButton.style.backgroundColor = "";
+        }
     }
 
     function deleteSelectedCellsFromDatabase(cardCounter, idlahan) {
@@ -359,15 +281,15 @@
 
             const queryParams = selectedCellsData.map(cellData =>
                 `idlahan=${cellData.idlahan}&id_user=${cellData.id_user}&data_col=${cellData.data_col}&data_row=${cellData.data_row}`
-                ).join('&');
+            ).join('&');
 
             fetch(`${url}?${queryParams}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    },
-                })
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+            })
 
                 .then(response => response.json())
                 .then(data => {
@@ -377,7 +299,7 @@
         isSelectedCells.clear();
     }
 
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', function (event) {
         var hapusButton = document.getElementById("hapusButton");
 
         if (!hapusButton.contains(event.target) && !event.target.classList.contains('cell') && !event.target
@@ -402,15 +324,15 @@
             console.log('Selected Cells Data:', selectedCellsData);
 
             fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    },
-                    body: JSON.stringify({
-                        selectedCells: selectedCellsData
-                    }),
-                })
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+                body: JSON.stringify({
+                    selectedCells: selectedCellsData
+                }),
+            })
 
                 .then(response => response.json())
                 .then(data => {
@@ -429,7 +351,7 @@
         var alertShown = false;
 
         if (confirm('Apakah data sudah benar?')) {
-            isSelectedCells.forEach(function(selectedCell) {
+            isSelectedCells.forEach(function (selectedCell) {
                 if (selectedCell.querySelector('input')) {
                     var inputElement = selectedCell.querySelector('input');
                     var previousValue = inputElement.getAttribute('data-previous-input');
@@ -462,7 +384,7 @@
                     }
                 }
 
-                isSelectedCells.forEach(function(selectedCell) {
+                isSelectedCells.forEach(function (selectedCell) {
                     selectedCell.style.backgroundColor = 'white';
                     var cellContent = selectedCell.textContent;
                     if (cellContent.includes("Pemupukan")) {
@@ -474,7 +396,7 @@
             });
         }
 
-        isSelectedCells.forEach(function(selectedCell) {
+        isSelectedCells.forEach(function (selectedCell) {
             selectedCell.style.backgroundColor = 'white';
             var cellContent = selectedCell.textContent;
             if (cellContent.includes("Pemupukan")) {
@@ -492,7 +414,7 @@
     }
 
     function updateTabel(data, idlahan, counter) {
-        data.forEach(function(item) {
+        data.forEach(function (item) {
             var data_col = item.data_col;
             var data_row = item.data_row;
             var warna = item.warna;
@@ -532,7 +454,7 @@
             var row = document.createElement("tr");
             for (var j = 1; j <= kolom; j++) {
                 var cell = document.createElement("td");
-                cell.className = "cell";
+                cell.className = `cell cell${counter}`;
                 cell.style.backgroundColor = "white";
                 cell.style.border = "3px solid grey";
                 cell.style.width = cellWidth;
@@ -545,7 +467,7 @@
                 cell.setAttribute('data-height', cell.clientHeight + 'px');
                 cell.setAttribute('data-row', i);
                 cell.setAttribute('data-col', j);
-                cell.addEventListener("click", function() {
+                cell.addEventListener("click", function () {
                     this.style.backgroundColor = activeColor;
                     this.style.width = cellWidth;
                     this.style.height = cellHeight;
@@ -563,17 +485,6 @@
         namaLahanDiv.style.marginBottom = "10px";
     }
 
-
-    function resetCellTimer(cell) {
-        if (cell.getAttribute('data-timer')) {
-            clearTimeout(cell.getAttribute('data-timer'));
-        }
-        cell.removeAttribute('data-timer');
-        cell.removeAttribute('data-timer-set');
-        cell.style.backgroundColor = 'white';
-        cell.textContent = '';
-    }
-
     function catatan() {
         var NotesPicker = document.getElementById('NotesPicker');
         if (NotesPicker.style.display === 'none' || NotesPicker.style.display === '' || markActionPicker.style
@@ -589,7 +500,7 @@
             NotesPicker.style.display = 'none';
             catatanButton.style.backgroundColor = "";
             isNotes = false;
-            isSelectedCells.forEach(function(selectedCell) {
+            isSelectedCells.forEach(function (selectedCell) {
                 selectedCell.style.backgroundColor = 'white';
                 var cellContent = selectedCell.textContent;
                 if (cellContent.includes("Pemupukan")) {
@@ -631,7 +542,7 @@
         tableContainer.style.transform = 'scale(1)';
     }
 
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', function (event) {
         var cardElement = event.target.closest('.card.mb-3');
         if (!cardElement) {
             resetZoom(cardCounter);
@@ -639,8 +550,8 @@
     });
 
     var cardElements = document.querySelectorAll('.card.mb-3');
-    cardElements.forEach(function(cardElement) {
-        cardElement.addEventListener('click', function(event) {
+    cardElements.forEach(function (cardElement) {
+        cardElement.addEventListener('click', function (event) {
             event.stopPropagation();
         });
     });
@@ -659,43 +570,44 @@
         };
 
         fetch('/create-lahan', {
-                method: 'POST',
-                body: JSON.stringify(data),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
             .catch(error => {
                 console.error('Error:', error);
             });
     }
 
-    function resetCell() {
-        var button = event.target;
-        var table = button.closest('.content');
-        if (table) {
-            var cells = table.getElementsByClassName("cell");
-            if (confirm("Apakah Anda yakin ingin mereset semua data pada tabel?")) {
-                for (var i = 0; i < cells.length; i++) {
-                    cells[i].style.backgroundColor = "white";
-                    cells[i].textContent = "";
+    function resetCell(idlahan, cardCounter) {
+        if (confirm("Apakah Anda yakin ingin mereset semua data pada tabel?")) {
+            const url = '/deleteAllCells';
 
-                    var timerId = cells[i].getAttribute('data-timer');
-                    if (timerId) {
-                        clearTimeout(timerId);
-                        cells[i].removeAttribute('data-timer');
-                        cells[i].removeAttribute('data-timer-set');
-                    }
-                }
-                var tableBodyId = table.querySelector('tbody').id;
-                totalWeights[tableBodyId] = 0;
+            const queryParams = `idlahan=${idlahan}&cardCounter=${cardCounter}`;
 
-                var idWithoutPrefix = tableBodyId.substring('tableBody'.length);
-                var totalWeightElement = document.getElementById('totalWeight' + idWithoutPrefix);
-                if (totalWeightElement) {
-                    totalWeightElement.textContent = totalWeights[tableBodyId];
-                }
-            }
+            fetch(`${url}?${queryParams}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
+            var cells = document.querySelectorAll(`.cell${cardCounter}`);
+
+            cells.forEach(cell => {
+                cell.style.backgroundColor = 'white';
+                cell.textContent = '';
+            });
         }
     }
 
@@ -716,17 +628,17 @@
             ejumlahKolom > 26) {
             alert("Harap masukkan nilai yang valid untuk baris (maksimum 16) dan kolom (maksimum 26)");
         } else if (confirm(
-                "Tindakan ini akan mengatur ulang semua data dari Lahan yang dipilih. Apakah Anda ingin melanjutkan?"
-                )) {
+            "Tindakan ini akan mengatur ulang semua data dari Lahan yang dipilih. Apakah Anda ingin melanjutkan?"
+        )) {
             location.reload();
             fetch('/update-lahan', {
-                    method: 'POST',
-                    body: JSON.stringify(data),
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
-                })
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
                 .then(response => {
                     if (response.ok) {
                         return response.json();
@@ -755,7 +667,7 @@
         }
     }
 
-    document.getElementById("tambahLahanButton").addEventListener("click", function() {
+    document.getElementById("tambahLahanButton").addEventListener("click", function () {
         var formLahan = document.getElementById("formLahan");
         if (formLahan.style.display === "none" || formLahan.style.display === "") {
             formLahan.style.display = "block";
@@ -765,7 +677,7 @@
         }
     });
 
-    document.getElementById("UbahLahanButton").addEventListener("click", function() {
+    document.getElementById("UbahLahanButton").addEventListener("click", function () {
         var formUbah = document.getElementById("formUbah");
         if (formUbah.style.display === "none" || formUbah.style.display === "") {
             formUbah.style.display = "block";

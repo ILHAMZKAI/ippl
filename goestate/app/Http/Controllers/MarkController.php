@@ -47,7 +47,6 @@ class MarkController extends Controller
             ], 404);
         }
     }
-
     public function deleteSelectedCells(Request $request)
     {
         $request->validate([
@@ -65,5 +64,40 @@ class MarkController extends Controller
         ])->delete();
 
         return response()->json(['message' => 'Selected cells deleted successfully']);
+    }
+
+    public function deleteAllCells(Request $request)
+    {
+        $idlahan = $request->input('idlahan');
+        $id_user = Auth::id();
+
+        Mark::where([
+            'idlahan' => $idlahan,
+            'id_user' => $id_user,
+        ])->delete();
+
+        return response()->json(['message' => 'All cells for the user deleted successfully']);
+    }
+
+    public function changeColor($lahanId, $color)
+    {
+        try {
+            info("Received lahanId: $lahanId, color: $color");
+
+            $models = Mark::where('idlahan', $lahanId)->get();
+
+            if ($models->isEmpty()) {
+                throw new \Exception("No records found for Lahan with ID $lahanId.");
+            }
+
+            foreach ($models as $model) {
+                $model->warna = $color;
+                $model->save();
+            }
+
+            return response()->json(['success' => true, 'message' => 'Color changed successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
 }

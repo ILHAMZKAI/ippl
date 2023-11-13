@@ -176,24 +176,30 @@ $cardCounter = 0;
                                 <div class="card">
                                     <div class="card-body">
                                         Total Berat: <span id="totalWeight{{ $cardCounter }}">0</span>
+                                        @csrf
                                         <button class="btn btn-dark px-4 mt-2 mb-n1"
-                                            onclick="resetCell()">Reset</button>
+                                            onclick="resetCell('{{ $lahan->id }}', '{{ $cardCounter }}')">Reset</button>
                                     </div>
                                 </div>
-
                                 <div class="card" style="margin-top: 10px;">
                                     <div class="card-body">
-                                        Waktu: <span id="userTime{{ $cardCounter }}">-</span>
-                                        <div class="mt-1">
-                                            <label for="inputTime{{ $cardCounter }}">Set Time:</label>
-                                            <input type="text" id="inputTime{{ $cardCounter }}" placeholder="HH:mm:ss"
-                                                style="width: 100px; margin-right: 10px; margin-bottom: 5px;">
-                                            <button class="btn btn-dark px-4" style="margin-bottom: 10px;"
-                                                onclick="startCountdown('{{ $cardCounter }}', '{{ $lahan->id }}')">Start
-                                                Timer</button>
+                                        <div>
+                                            <label class="ms-0 mb-n2">Select Action:</label>
+                                            <select id="selectAction{{ $cardCounter }}"
+                                                style="width: 125px; margin-bottom: 8px;">
+                                                <option value="pemupukan">Pemupukan</option>
+                                                <option value="panen">Panen</option>
+                                            </select>
                                         </div>
-
-                                        <div id="countdown{{ $cardCounter }}" class="mt-2"></div>
+                                        <div>
+                                            <label class="ms-0 mb-n2">Date and Time:</label>
+                                            <input type="datetime-local" id="dateTimePicker{{ $cardCounter }}"
+                                                style="width: 125px; margin-bottom: 8px;">
+                                        </div>
+                                        @csrf
+                                        <button class="btn btn-dark px-4"
+                                            onclick="saveActionTimer({{ $lahan->id }}, {{ $cardCounter }}, {{ auth()->user()->id }})">Save
+                                            Action and Timer</button>
                                     </div>
                                 </div>
                             </div>
