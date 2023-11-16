@@ -17,13 +17,22 @@ class MarkController extends Controller
                 $user = Auth::user();
 
                 foreach ($selectedCells as $cellData) {
-                    Mark::create([
+                    $existingMark = Mark::where([
                         'idlahan' => $cellData['idlahan'],
                         'id_user' => $user->id,
                         'data_col' => $cellData['data_col'],
                         'data_row' => $cellData['data_row'],
-                        'warna' => $cellData['warna'],
-                    ]);
+                    ])->first();
+
+                    if (!$existingMark) {
+                        Mark::create([
+                            'idlahan' => $cellData['idlahan'],
+                            'id_user' => $user->id,
+                            'data_col' => $cellData['data_col'],
+                            'data_row' => $cellData['data_row'],
+                            'warna' => $cellData['warna'],
+                        ]);
+                    }
                 }
 
                 return response()->json(['message' => 'Data saved successfully']);
@@ -79,25 +88,32 @@ class MarkController extends Controller
         return response()->json(['message' => 'All cells for the user deleted successfully']);
     }
 
-    public function changeColor($lahanId, $color)
+    public function updateBerat(Request $request)
     {
-        try {
-            info("Received lahanId: $lahanId, color: $color");
+        $userId = auth()->id();
 
-            $models = Mark::where('idlahan', $lahanId)->get();
-
-            if ($models->isEmpty()) {
-                throw new \Exception("No records found for Lahan with ID $lahanId.");
+        if ($request->has('selectedCells') && is_array($request->input('selectedCells'))) {
+            foreach ($request->input('selectedCells') as $selectedCell) {
+                Mark::where([
+                    'idlahan' => $selectedCell['idlahan'],
+                    'id_user' => $userId,
+                    'data_col' => $selectedCell['data_col'],
+                    'data_row' => $selectedCell['data_row'],
+                ])->update(['berat' => $selectedCell['berat']]);
             }
 
-            foreach ($models as $model) {
-                $model->warna = $color;
-                $model->save();
-            }
-
-            return response()->json(['success' => true, 'message' => 'Color changed successfully']);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json(['success' => true, 'message' => 'Berat berhasil diperbarui']);
         }
+
+        return response()->json(['success' => false, 'message' => 'Invalid input']);
+    }
+
+    public function getTotalWeight($idlahan, $id_user)
+    {
+        $totalWeight = Mark::where('idlahan', $idlahan)
+            ->where('id_user', $id_user)
+            ->sum('berat');
+
+        return response()->json(['totalWeight' => $totalWeight]);
     }
 }

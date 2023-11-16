@@ -9,7 +9,6 @@ class Lahan extends Model
 {
     use HasFactory;
     protected $table = 'datalahan';
-
     protected $fillable = [
         'nama',
         'jumlah_baris',

@@ -15,7 +15,7 @@ class TimerController extends Controller
             $validator = Validator::make($request->all(), [
                 'lahan_id' => 'required|numeric',
                 'action' => 'required|string',
-                'date_time' => 'required|date_format:Y-m-d\TH:i',
+                'timer' => 'required|date_format:Y-m-d\TH:i',
             ]);
 
             if ($validator->fails()) {
@@ -28,7 +28,7 @@ class TimerController extends Controller
             Timer::updateOrCreate(
                 [
                     'action' => $request->input('action'),
-                    'timer' => $request->input('date_time'),
+                    'timer' => $request->input('timer'),
                     'lahan_id' => $request->input('lahan_id'),
                     'iduser' => $userId,
                 ]
@@ -43,4 +43,48 @@ class TimerController extends Controller
         }
     }
 
+    public function checkActionTimer(Request $request)
+    {
+        $lahanId = $request->input('lahan_id');
+        $userId = $request->input('iduser');
+
+        $recordExists = Timer::where('lahan_id', $lahanId)
+            ->where('iduser', $userId)
+            ->exists();
+
+        return response()->json(['exists' => $recordExists]);
+    }
+
+    public function updateActionTimer(Request $request)
+    {
+        $lahanId = $request->input('lahan_id');
+        $userId = $request->input('iduser');
+        $selectedAction = $request->input('action');
+        $dateTime = $request->input('timer');
+
+        Timer::where('lahan_id', $lahanId)
+            ->where('iduser', $userId)
+            ->update([
+                'action' => $selectedAction,
+                'timer' => $dateTime,
+            ]);
+
+        return response()->json(['message' => 'Record updated successfully']);
+    }
+
+    public function getTimer($lahanId, $userId)
+    {
+        $timer = Timer::where('lahan_id', $lahanId)
+            ->where('iduser', $userId)
+            ->first();
+
+        if (!$timer) {
+            return response()->json(['error' => 'Timer not found'], 404);
+        }
+
+        return response()->json([
+            'action' => $timer->action,
+            'timer' => $timer->timer,
+        ]);
+    }
 }

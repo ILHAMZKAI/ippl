@@ -120,7 +120,7 @@
     var activeColor = "none";
     var isSelectedCells = new Map();
     var isClearingEnabled = false;
-    var isAction = false;
+    var isActionMark = false;
     var isNotes = false;
     var totalWeights = {};
 
@@ -128,20 +128,13 @@
         var selectedAction = document.getElementById('selectAction' + cardCounter).value;
         var dateTime = document.getElementById('dateTimePicker' + cardCounter).value;
 
-        var data = {
-            lahan_id: lahanId,
-            action: selectedAction,
-            date_time: dateTime,
-            iduser: userId,
-        };
-
-        fetch('/saveActionTimer', {
+        fetch('/checkActionTimer', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify({ lahan_id: lahanId, iduser: userId })
         })
             .then(response => {
                 if (!response.ok) {
@@ -150,7 +143,47 @@
                 return response.json();
             })
             .then(responseData => {
+                var data = {
+                    lahan_id: lahanId,
+                    action: selectedAction,
+                    timer: dateTime,
+                    iduser: userId,
+                };
+
+                if (responseData.exists) {
+                    var confirmation = confirm('Waktu sudah diterapkan pada lahan. Apakah Anda ingin memperbarui waktu');
+                    if (!confirmation) {
+                        return;
+                    }
+
+                    return fetch('/updateActionTimer', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        },
+                        body: JSON.stringify(data)
+                    });
+                } else {
+                    return fetch('/saveActionTimer', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        },
+                        body: JSON.stringify(data)
+                    });
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(responseData => {
                 console.log('Action and Timer saved successfully:', responseData);
+                location.reload();
             })
             .catch(error => {
                 console.error('Error saving Action and Timer:', error);
@@ -159,19 +192,19 @@
 
     function setMark() {
         var markActionPicker = document.getElementById('markActionPicker');
-        if (markActionPicker.style.display === 'none' || markActionPicker.style.display === '' || NotesPicker
+        if (markActionPicker.style.display === 'none' || markActionPicker.style.display === '' || weightPicker
             .style.display === 'block') {
             markActionPicker.style.display = 'block';
             markButton.style.backgroundColor = "#8392ab";
-            isAction = true;
+            isActionMark = true;
 
-            NotesPicker.style.display = 'none';
+            weightPicker.style.display = 'none';
             catatanButton.style.backgroundColor = "";
             isNotes = false;
         } else {
             markActionPicker.style.display = 'none';
             markButton.style.backgroundColor = "";
-            isAction = false;
+            isActionMark = false;
             isSelectedCells.forEach(function (selectedCell) {
                 selectedCell.style.backgroundColor = 'white';
                 var cellContent = selectedCell.textContent;
@@ -189,7 +222,7 @@
         var markActionPicker = document.getElementById('markActionPicker');
         markActionPicker.style.display = 'none';
         markButton.style.backgroundColor = "";
-        isAction = false;
+        isActionMark = false;
         isSelectedCells.clear();
     }
 
@@ -198,66 +231,44 @@
     }
 
     function selectCell(cell) {
-        if (isAction == true) {
-            cell.style.backgroundColor = 'red';
+        if (isActionMark == true) {
+            cell.style.backgroundColor = '#cc0000';
             isSelectedCells.set(cell, cell);
         } else if (isClearingEnabled == true) {
             cell.style.backgroundColor = 'white';
             isSelectedCells.set(cell, cell);
+            cell.textContent = '';
+        } else if (isNotes == true) {
+            if (cell.style.backgroundColor === 'white') {
+                alert("Tidak dapat memberi data berat pada sel yang kosong");
+            } else {
+                cell.style.backgroundColor = 'blue';
+                isSelectedCells.set(cell, cell);
+                const weightInput = document.getElementById("weightInput").value;
+                cell.textContent = weightInput + '.0';
+                cell.style.textAlign = 'center';
+                cell.style.verticalAlign = 'middle';
+                cell.style.fontSize = '20px';
+                cell.style.fontWeight = 'bold';
+                cell.style.color = 'white';
+            }
         }
     }
 
-    function handleCellClick(cardCounter, idLahan) {
-        if (isAction == true) {
-            saveSelectedCellsToDatabase(cardCounter, idLahan);
+    function handleCellClick(cardCounter, idlahan) {
+        if (isActionMark == true) {
+            saveSelectedCellsToDatabase(cardCounter, idlahan);
         } else if (isClearingEnabled == true) {
-            deleteSelectedCellsFromDatabase(cardCounter, idLahan);
+            deleteSelectedCellsFromDatabase(cardCounter, idlahan);
+        } else if (isNotes == true) {
+            saveNotesToDatabase(cardCounter, idlahan);
         }
-    }
-
-    function saveSelectedCellsToDatabase(cardCounter, idlahan) {
-        if (isAction == true) {
-            const url = '/saveSelectedCells';
-
-            const selectedCellsData = Array.from(isSelectedCells.values()).map(cell => ({
-                idlahan: idlahan,
-                id_user: '{{ Auth::id() }}',
-                data_col: cell.getAttribute('data-col'),
-                data_row: cell.getAttribute('data-row'),
-                warna: 'red'
-            }));
-
-            console.log('Selected Cells Data:', selectedCellsData);
-
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                },
-                body: JSON.stringify({
-                    selectedCells: selectedCellsData
-                }),
-            })
-
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                })
-        }
-        isSelectedCells.clear();
     }
 
     function hapusSelectedCell() {
         isClearingEnabled = !isClearingEnabled;
 
         var hapusButton = document.getElementById("hapusButton");
-
-        if (isAction) {
-            markActionPicker.style.display = 'none';
-            markButton.style.backgroundColor = "";
-            isAction = false;
-        }
 
         if (isClearingEnabled) {
             hapusButton.style.backgroundColor = "#8392ab";
@@ -309,8 +320,31 @@
         }
     });
 
+    document.addEventListener('click', function (event) {
+        var markButton = document.getElementById("markButton");
+
+        if (!markButton.contains(event.target) && !event.target.classList.contains('cell') && !event.target
+            .classList.contains('selected-cell')) {
+            isActionMark = false;
+            markActionPicker.style.display = 'none';
+            markButton.style.backgroundColor = "";
+        }
+    });
+
+    document.addEventListener('click', function (event) {
+        var catatanButton = document.getElementById("catatanButton");
+        var floatingDiv = document.getElementById("floatingDiv");
+
+        if (!catatanButton.contains(event.target) && !event.target.classList.contains('cell') && !event.target
+            .classList.contains('selected-cell') && !floatingDiv.contains(event.target)) {
+            isNotes = false;
+            weightPicker.style.display = 'none';
+            catatanButton.style.backgroundColor = "";
+        }
+    });
+
     function saveSelectedCellsToDatabase(cardCounter, idlahan) {
-        if (isAction == true) {
+        if (isActionMark == true) {
             const url = '/saveSelectedCells';
 
             const selectedCellsData = Array.from(isSelectedCells.values()).map(cell => ({
@@ -318,7 +352,7 @@
                 id_user: '{{ Auth::id() }}',
                 data_col: cell.getAttribute('data-col'),
                 data_row: cell.getAttribute('data-row'),
-                warna: 'red'
+                warna: '#cc0000'
             }));
 
             console.log('Selected Cells Data:', selectedCellsData);
@@ -344,6 +378,42 @@
         }
         isSelectedCells.clear();
     }
+
+    function saveNotesToDatabase(cardCounter, idlahan) {
+        if (isNotes == true) {
+            var beratInput = document.getElementById('weightInput').value;
+
+            const selectedCellsData = Array.from(isSelectedCells.values()).map(cell => ({
+                idlahan: idlahan,
+                id_user: '{{ Auth::id() }}',
+                data_col: cell.getAttribute('data-col'),
+                data_row: cell.getAttribute('data-row'),
+                berat: beratInput,
+            }));
+
+            console.log('Selected Cells Data:', selectedCellsData);
+
+            fetch('/update-berat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+                body: JSON.stringify({
+                    selectedCells: selectedCellsData
+                }),
+            })
+                .then(response => response.json())
+                .then(response => {
+                    console.log(response);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+        isSelectedCells.clear();
+    }
+
 
     function confirmNotes() {
         var notesInput = document.getElementById("notesInput");
@@ -406,8 +476,8 @@
             }
         });
 
-        var NotesPicker = document.getElementById('NotesPicker');
-        NotesPicker.style.display = 'none';
+        var weightPicker = document.getElementById('weightPicker');
+        weightPicker.style.display = 'none';
         catatanButton.style.backgroundColor = "";
         isNotes = false;
         isSelectedCells.clear();
@@ -418,12 +488,26 @@
             var data_col = item.data_col;
             var data_row = item.data_row;
             var warna = item.warna;
+            var berat = item.berat;
 
             var cell = document.querySelector(
                 `#tableBody${counter} [data-row="${data_row}"][data-col="${data_col}"]`);
 
             if (cell) {
                 cell.style.backgroundColor = warna;
+                cell.style.textAlign = 'center';
+                cell.style.verticalAlign = 'middle';
+                cell.style.fontSize = '20px';
+                cell.style.fontWeight = 'bold';
+                cell.textContent = berat;
+
+                if (warna === 'yellow') {
+                    cell.style.color = 'black';
+                } else if (warna === 'green') {
+                    cell.style.color = 'white';
+                } else {
+                    cell.style.color = 'white';
+                }
             } else {
                 console.error('Sel tidak ditemukan.');
             }
@@ -485,31 +569,17 @@
         namaLahanDiv.style.marginBottom = "10px";
     }
 
-    function catatan() {
-        var NotesPicker = document.getElementById('NotesPicker');
-        if (NotesPicker.style.display === 'none' || NotesPicker.style.display === '' || markActionPicker.style
+    function setCatatan() {
+        var weightPicker = document.getElementById('weightPicker');
+        if (weightPicker.style.display === 'none' || weightPicker.style.display === '' || markActionPicker.style
             .display === 'block') {
-            NotesPicker.style.display = 'block';
+            weightPicker.style.display = 'block';
             catatanButton.style.backgroundColor = "#8392ab";
             isNotes = true;
-
-            markActionPicker.style.display = 'none';
-            markButton.style.backgroundColor = "";
-            isAction = false;
         } else {
-            NotesPicker.style.display = 'none';
+            weightPicker.style.display = 'none';
             catatanButton.style.backgroundColor = "";
             isNotes = false;
-            isSelectedCells.forEach(function (selectedCell) {
-                selectedCell.style.backgroundColor = 'white';
-                var cellContent = selectedCell.textContent;
-                if (cellContent.includes("Pemupukan")) {
-                    selectedCell.style.backgroundColor = 'yellow';
-                } else if (cellContent.includes("Panen")) {
-                    selectedCell.style.backgroundColor = 'green';
-                }
-            });
-            isSelectedCells.clear();
         }
     }
 
@@ -581,6 +651,29 @@
             });
     }
 
+    document.addEventListener('DOMContentLoaded', function () {
+        calculateTotalWeight();
+    });
+
+    function calculateTotalWeight() {
+        var elements = document.querySelectorAll('[data-lahan-id][data-user-id]');
+
+        elements.forEach(function (element) {
+            var lahanId = element.getAttribute('data-lahan-id');
+            var userId = element.getAttribute('data-user-id');
+
+            fetch('/get-total-weight/' + lahanId + '/' + userId)
+                .then(response => response.json())
+                .then(data => {
+                    var totalWeight = data.totalWeight || 0;
+                    element.textContent = totalWeight + ' KG';
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        });
+    }
+
     function resetCell(idlahan, cardCounter) {
         if (confirm("Apakah Anda yakin ingin mereset semua data pada tabel?")) {
             const url = '/deleteAllCells';
@@ -597,6 +690,7 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log(data);
+                    document.getElementById(`totalWeight${cardCounter}`).textContent = '0 KG';
                 })
                 .catch(error => {
                     console.error(error);
@@ -609,6 +703,33 @@
                 cell.textContent = '';
             });
         }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        updateTimersFromDatabase();
+    });
+
+    function updateTimersFromDatabase() {
+        var elements = document.querySelectorAll('[data-timer-id][user-id]');
+
+        elements.forEach(function (element) {
+            var lahanId = element.getAttribute('data-timer-id');
+            var userId = element.getAttribute('user-id');
+
+            fetch('/timers/' + lahanId + '/' + userId)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.action !== undefined && data.timer !== undefined) {
+                        var action = data.action;
+                        var timer = data.timer;
+
+                        element.innerText = 'Aksi: ' + action + ' Waktu: ' + timer;
+                    } else {
+                        element.innerText = 'Tidak ada waktu diterapkan';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
     }
 
     function ubahLahan() {
@@ -624,9 +745,9 @@
             jumlahBaris: ejumlahBaris,
             jumlahKolom: ejumlahKolom,
         };
-        if (isNaN(ejumlahBaris) || isNaN(ejumlahKolom) || ejumlahBaris < 1 || ejumlahBaris > 16 || ejumlahKolom < 1 ||
-            ejumlahKolom > 26) {
-            alert("Harap masukkan nilai yang valid untuk baris (maksimum 16) dan kolom (maksimum 26)");
+        if (isNaN(ejumlahBaris) || isNaN(ejumlahKolom) || ejumlahBaris < 1 || ejumlahBaris > 6 || ejumlahKolom < 1 ||
+            ejumlahKolom > 10) {
+            alert("Harap masukkan nilai yang valid untuk baris (maksimum 6) dan kolom (maksimum 10)");
         } else if (confirm(
             "Tindakan ini akan mengatur ulang semua data dari Lahan yang dipilih. Apakah Anda ingin melanjutkan?"
         )) {
@@ -687,6 +808,18 @@
         }
     });
 
+    document.addEventListener('DOMContentLoaded', function () {
+        const savedState = sessionStorage.getItem('contentState');
+
+        if (savedState) {
+            const contentElement = document.getElementById(savedState);
+            if (contentElement) {
+                contentElement.style.display = 'block';
+                contentElement.classList.add('visible-content');
+            }
+        }
+    });
+
     function toggleElements(cardCounter) {
         const contentElement = document.getElementById(`content${cardCounter}`);
 
@@ -700,5 +833,6 @@
             contentElement.classList.remove('visible-content');
             contentElement.classList.add('hidden-content');
         }
+        sessionStorage.setItem('contentState', `content${cardCounter}`);
     }
 </script>

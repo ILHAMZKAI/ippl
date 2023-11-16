@@ -46,11 +46,11 @@
                 </div>
             </div>
             <div>
-                <button class="btn btn-dark px-md-5" id="catatanButton" onclick="catatan()">Tambah
-                    Catatan</button>
-                <div id="NotesPicker" style="display: none;">
-                    <input type="text" class="form-control" id="notesInput" placeholder="Angka dalam kilogram">
-                    <button class="btn btn-success mt-3" onclick="confirmNotes()">OK</button>
+                <button class="btn btn-dark px-md-5" id="catatanButton" onclick="setCatatan()">Tambah
+                    Berat</button>
+                <div id="weightPicker" style="display: none;">
+                    <input type="number" class="form-control" id="weightInput" placeholder="Angka dalam kilogram">
+                    <button class="btn btn-success mt-3" onclick="refreshButton()">OK</button>
                 </div>
             </div>
         </div>
@@ -173,33 +173,41 @@ $cardCounter = 0;
                                 </div>
                             </div>
                             <div class="col-md-2 ms-n5">
-                                <div class="card">
+                                <div class="card me-n5">
                                     <div class="card-body">
-                                        Total Berat: <span id="totalWeight{{ $cardCounter }}">0</span>
+                                        Total Berat: <span id="totalWeight{{ $cardCounter }}"
+                                            data-lahan-id="{{ $lahan->id }}" data-user-id="{{ Auth::id() }}"></span>
                                         @csrf
                                         <button class="btn btn-dark px-4 mt-2 mb-n1"
-                                            onclick="resetCell('{{ $lahan->id }}', '{{ $cardCounter }}')">Reset</button>
+                                            onclick="resetCell('{{ $lahan->id }}', '{{ $cardCounter }}')">Reset
+                                            Lahan</button>
                                     </div>
                                 </div>
-                                <div class="card" style="margin-top: 10px;">
+                                <div class="card me-n5" style="margin-top: 25px;">
                                     <div class="card-body">
                                         <div>
-                                            <label class="ms-0 mb-n2">Select Action:</label>
+                                            <label class="ms-0 mb-n2">Pilih Aksi:</label>
                                             <select id="selectAction{{ $cardCounter }}"
-                                                style="width: 125px; margin-bottom: 8px;">
+                                                style="width: 170px; margin-bottom: 8px;">
                                                 <option value="pemupukan">Pemupukan</option>
                                                 <option value="panen">Panen</option>
                                             </select>
                                         </div>
                                         <div>
-                                            <label class="ms-0 mb-n2">Date and Time:</label>
+                                            <label class="ms-0 mb-n2">Tanggal dan Waktu:</label>
                                             <input type="datetime-local" id="dateTimePicker{{ $cardCounter }}"
-                                                style="width: 125px; margin-bottom: 8px;">
+                                                style="width: 170px; margin-bottom: 8px;">
                                         </div>
-                                        @csrf
-                                        <button class="btn btn-dark px-4"
-                                            onclick="saveActionTimer({{ $lahan->id }}, {{ $cardCounter }}, {{ auth()->user()->id }})">Save
-                                            Action and Timer</button>
+                                        <div>
+                                            @csrf
+                                            <button class="btn btn-dark px-4"
+                                                onclick="saveActionTimer({{ $lahan->id }}, {{ $cardCounter }}, {{ auth()->user()->id }})">Simpan
+                                                Jadwal</button>
+                                        </div>
+                                        <div>
+                                            <span id="timer{{ $cardCounter }}" data-timer-id="{{ $lahan->id }}"
+                                                user-id="{{ Auth::id() }}"></span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -212,7 +220,5 @@ $cardCounter = 0;
     @include('pages.script')
     @endforeach
 </div>
-
-
 @include('pages.script')
 @endsection

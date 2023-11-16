@@ -26,10 +26,15 @@ Route::post('/garden-management', [LahanController::class, 'create'])->name('cre
 Route::post('/delete-lahan/{id}', [LahanController::class, 'delete'])->name('delete-lahan');
 Route::post('/update-lahan', [LahanController::class, 'updateLahan'])->name('update-lahan');
 Route::post('/saveSelectedCells', [MarkController::class, 'saveSelectedCells']);
-Route::get('/getMarksData/{idLahan}', [MarkController::class, 'getMarksData']);
+Route::get('/getMarksData/{idlahan}', [MarkController::class, 'getMarksData']);
 Route::delete('/deleteSelectedCells', [MarkController::class, 'deleteSelectedCells']);
 Route::delete('/deleteAllCells', [MarkController::class, 'deleteAllCells']);
+Route::post('/update-berat', [MarkController::class, 'updateBerat']);
+Route::get('/get-total-weight/{idlahan}/{id_user}', [MarkController::class, 'getTotalWeight']);
 Route::post('/saveActionTimer', [TimerController::class, 'saveActionTimer']);
+Route::post('/checkActionTimer', [TimerController::class, 'checkActionTimer']);
+Route::post('/updateActionTimer', [TimerController::class, 'updateActionTimer']);
+Route::get('/timers/{lahanId}/{userId}', [TimerController::class, 'getTimer']);
 Route::get('/register', [RegisterController::class, 'create'])->middleware('guest')->name('register');
 Route::post('/register', [RegisterController::class, 'store'])->middleware('guest')->name('register.perform');
 Route::get('/login', [LoginController::class, 'show'])->middleware('guest')->name('login');

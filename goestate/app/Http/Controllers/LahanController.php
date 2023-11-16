@@ -24,9 +24,9 @@ class LahanController extends Controller
 
         if (
             !is_numeric($jumlahBaris) || !is_numeric($jumlahKolom) ||
-            $jumlahBaris <= 0 || $jumlahKolom <= 0 || $jumlahBaris > 16 || $jumlahKolom > 26
+            $jumlahBaris <= 0 || $jumlahKolom <= 0 || $jumlahBaris > 6 || $jumlahKolom > 10
         ) {
-            return redirect('/garden-management')->with('error', 'Harap masukkan nilai yang valid untuk baris (maksimum 16) dan kolom (maksimum 26)');
+            return redirect('/garden-management')->with('error', 'Harap masukkan nilai yang valid untuk baris (maksimum 6) dan kolom (maksimum 10)');
         }
 
         $lahan = new Lahan;
@@ -60,8 +60,8 @@ class LahanController extends Controller
         $request->validate([
             'idLahan' => 'required',
             'namaLahan' => 'required',
-            'jumlahBaris' => 'required|numeric|min:1|max:16',
-            'jumlahKolom' => 'required|numeric|min:1|max:26',
+            'jumlahBaris' => 'required|numeric|min:1|max:6',
+            'jumlahKolom' => 'required|numeric|min:1|max:10',
         ]);
 
         $user = Auth::user();
