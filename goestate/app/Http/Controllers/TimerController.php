@@ -87,4 +87,19 @@ class TimerController extends Controller
             'timer' => $timer->timer,
         ]);
     }
+
+    public function deleteTimer($lahanId, $userId)
+    {
+        $timer = Timer::where('lahan_id', $lahanId)
+            ->where('iduser', $userId)
+            ->first();
+
+        if ($timer) {
+            $timer->delete();
+
+            return response()->json(['message' => 'Timer deleted successfully']);
+        } else {
+            return response()->json(['error' => 'Timer not found'], 404);
+        }
+    }
 }

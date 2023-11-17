@@ -35,6 +35,7 @@ Route::post('/saveActionTimer', [TimerController::class, 'saveActionTimer']);
 Route::post('/checkActionTimer', [TimerController::class, 'checkActionTimer']);
 Route::post('/updateActionTimer', [TimerController::class, 'updateActionTimer']);
 Route::get('/timers/{lahanId}/{userId}', [TimerController::class, 'getTimer']);
+Route::delete('/delete-timer/{lahanId}/{userId}', [TimerController::class, 'deleteTimer']);
 Route::get('/register', [RegisterController::class, 'create'])->middleware('guest')->name('register');
 Route::post('/register', [RegisterController::class, 'store'])->middleware('guest')->name('register.perform');
 Route::get('/login', [LoginController::class, 'show'])->middleware('guest')->name('login');

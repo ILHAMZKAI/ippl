@@ -15,9 +15,9 @@
 @endif
 <div class="row mx-4 me-4-1 mb-4">
     <div class="col-12 mx-1">
-        <div class="alert1 alert-light"><strong>Perkebunan</strong> @csrf
+        <div class="alert1 alert-light"><strong>Perkebunan</strong>
+            @csrf
             <button class="btn btn-gm1 ms-0 mx-auto mt-n2" onclick="toggleFloatingDiv()">Alat</button>
-            <button class="btn btn-gm1 ms-0 mx-3 mt-n2" onclick="simpanData()">Simpan</button>
             <button class="btn btn-gm1 ms-0 mx-3 mt-n2" id="UbahLahanButton">Ubah Lahan</button>
             <button class="btn btn-gm1 ms-0 mx-3 mt-n2" id="tambahLahanButton">Tambah Lahan</button>
         </div>
@@ -163,7 +163,7 @@ $cardCounter = 0;
                                                     onclick="handleCellClick({{ $cardCounter }}, {{ $lahan->id }})">
                                                     @include('pages.script')
                                                     <script>
-                                                        buatTabel("{{ $lahan->id }}", "{{ $lahan->nama }}", {{ $lahan-> jumlah_baris }}, {{ $lahan-> jumlah_kolom }},
+                                                        createTabel("{{ $lahan->id }}", "{{ $lahan->nama }}", {{ $lahan-> jumlah_baris }}, {{ $lahan-> jumlah_kolom }},
                                                             {{ $cardCounter }});
                                                     </script>
                                                 </tbody>
@@ -200,7 +200,7 @@ $cardCounter = 0;
                                         </div>
                                         <div>
                                             @csrf
-                                            <button class="btn btn-dark px-4"
+                                            <button class="btn btn-dark px-5-1"
                                                 onclick="saveActionTimer({{ $lahan->id }}, {{ $cardCounter }}, {{ auth()->user()->id }})">Simpan
                                                 Jadwal</button>
                                         </div>

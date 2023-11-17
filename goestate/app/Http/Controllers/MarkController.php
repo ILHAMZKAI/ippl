@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Mark;
+use App\Models\Timer;
 use Illuminate\Support\Facades\Auth;
 
 class MarkController extends Controller
@@ -83,6 +84,11 @@ class MarkController extends Controller
         Mark::where([
             'idlahan' => $idlahan,
             'id_user' => $id_user,
+        ])->delete();
+
+        Timer::where([
+            'lahan_id' => $idlahan,
+            'iduser' => $id_user,
         ])->delete();
 
         return response()->json(['message' => 'All cells for the user deleted successfully']);
