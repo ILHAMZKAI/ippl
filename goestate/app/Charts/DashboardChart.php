@@ -3,8 +3,8 @@
 namespace App\Charts;
 
 use ArielMejiaDev\LarapexCharts\LarapexChart;
+use App\Models\Lahan;
 use App\Models\Mark;
-use App\Models\Timer;
 
 class DashboardChart
 {
@@ -19,20 +19,15 @@ class DashboardChart
     {
         $userId = auth()->id();
 
-        $marksData = Mark::where('id_user', $userId)->orderBy('idlahan')->get();
-        $timerData = Timer::where('iduser', $userId)->orderBy('lahan_id')->pluck('timer')->toArray();
+        $lahanData = Lahan::where('user_id', $userId)->orderBy('id')->get();
 
         $beratData = [];
         $xAxisData = [];
 
-        $groupedMarks = $marksData->groupBy('idlahan');
-        $totalBerat = $groupedMarks->map(function ($group) {
-            return $group->sum('berat');
-        });
-
-        foreach ($totalBerat as $idlahan => $total) {
-            $beratData[] = $total;
-            $xAxisData[] = "ID Lahan: $idlahan";
+        foreach ($lahanData as $lahan) {
+            $markData = Mark::select('berat')->where('idlahan', $lahan->id)->get();
+            $beratData[] = $markData->sum('berat');
+            $xAxisData[] = "Lahan: $lahan->nama";
         }
 
         return $this->chart->AreaChart()
@@ -40,4 +35,5 @@ class DashboardChart
             ->addData('Total panen', $beratData)
             ->setXAxis($xAxisData);
     }
+
 }
