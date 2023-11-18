@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Charts\DashboardChart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\user;
@@ -24,7 +25,7 @@ class HomeController extends Controller
      * @return \Illuminate\View\View
      */
 
-    public function index()
+    public function index(DashboardChart $chart)
     {
         $usertype = Auth::user()->usertype;
         if ($usertype == '1') {
@@ -32,7 +33,7 @@ class HomeController extends Controller
             return view('admin.home', ['users' => $users]);
 
         } else {
-            return view('pages.dashboard');
+            return view('pages.dashboard', ['chart' => $chart->build()]);
         }
     }
 
