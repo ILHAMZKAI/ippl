@@ -16,6 +16,9 @@ return new class extends Migration {
             $table->string('warna');
             $table->decimal('berat', 10, 2)->nullable();
             $table->timestamps();
+
+            $table->foreign('id_user')->references('id')->on('users');
+            $table->foreign('idlahan')->references('id')->on('datalahan');
         });
     }
 

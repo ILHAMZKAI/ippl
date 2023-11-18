@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Timer extends Model
 {
     use HasFactory;
-    protected $table = 'times_lahan';
+    protected $table = 'times';
 
     protected $fillable = ['action', 'timer', 'lahan_id', 'iduser'];
 }

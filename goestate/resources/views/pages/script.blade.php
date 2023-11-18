@@ -349,15 +349,19 @@
             if (cell.style.backgroundColor === 'white') {
                 alert("Tidak dapat memberi data berat pada sel yang kosong");
             } else {
-                cell.style.backgroundColor = 'cyan';
-                isSelectedCells.set(cell, cell);
                 const weightInput = document.getElementById("weightInput").value;
-                cell.textContent = weightInput + '.0';
-                cell.style.textAlign = 'center';
-                cell.style.verticalAlign = 'middle';
-                cell.style.fontSize = '20px';
-                cell.style.fontWeight = 'bold';
-                cell.style.color = 'white';
+                if (weightInput === '' || parseFloat(weightInput) < 0) {
+                    alert("Isi berat minimal 0 dan tidak bisa negatif");
+                } else {
+                    isSelectedCells.set(cell, cell);
+                    cell.textContent = parseFloat(weightInput).toFixed(2);
+                    cell.style.backgroundColor = 'cyan';
+                    cell.style.textAlign = 'center';
+                    cell.style.verticalAlign = 'middle';
+                    cell.style.fontSize = '20px';
+                    cell.style.fontWeight = 'bold';
+                    cell.style.color = 'black';
+                }
             }
         }
     }
