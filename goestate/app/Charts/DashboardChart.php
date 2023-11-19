@@ -15,11 +15,11 @@ class DashboardChart
         $this->chart = $chart;
     }
 
-    public function build(): \ArielMejiaDev\LarapexCharts\AreaChart
+    public function build($sortBy = 'id', $sortOrder = 'asc'): \ArielMejiaDev\LarapexCharts\AreaChart
     {
         $userId = auth()->id();
 
-        $lahanData = Lahan::where('user_id', $userId)->orderBy('id')->get();
+        $lahanData = Lahan::where('user_id', $userId)->orderBy($sortBy, $sortOrder)->get();
 
         $beratData = [];
         $xAxisData = [];
@@ -31,9 +31,8 @@ class DashboardChart
         }
 
         return $this->chart->AreaChart()
-            ->setTitle('Total panen lahan')
-            ->addData('Total panen', $beratData)
+            ->setTitle('Total Panen')
+            ->addData('Berat', $beratData)
             ->setXAxis($xAxisData);
     }
-
 }

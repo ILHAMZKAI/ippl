@@ -12,6 +12,7 @@ use App\Http\Controllers\ChangePassword;
 use App\Http\Controllers\LahanController;
 use App\Http\Controllers\MarkController;
 use App\Http\Controllers\TimerController;
+use App\Http\Controllers\DashboardController;
 
 
 Route::get('/', function () {
@@ -21,6 +22,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/pages.dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/garden-management', [LahanController::class, 'index'])->name('garden-management')->middleware('auth');
 Route::post('/garden-management', [LahanController::class, 'create'])->name('create-lahan');
 Route::post('/delete-lahan/{id}', [LahanController::class, 'delete'])->name('delete-lahan');
