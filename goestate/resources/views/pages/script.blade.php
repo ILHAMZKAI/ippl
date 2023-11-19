@@ -1,9 +1,9 @@
 <script>
     var autoHideAlerts = document.querySelectorAll('.auto-hide-alert');
 
-    autoHideAlerts.forEach(function (autoHideAlert) {
+    autoHideAlerts.forEach(function(autoHideAlert) {
         if (autoHideAlert) {
-            setTimeout(function () {
+            setTimeout(function() {
                 autoHideAlert.style.display = 'none';
             }, 6000);
         }
@@ -87,7 +87,7 @@
             minDiv.style.top = newY + "px";
         });
 
-        minDiv.addEventListener("click", function () {
+        minDiv.addEventListener("click", function() {
             if (!isDragging) {
                 floatingDivVisible = true;
                 floatingDiv.style.display = "block";
@@ -95,7 +95,7 @@
             }
         });
 
-        minDiv.addEventListener("mousedown", function (event) {
+        minDiv.addEventListener("mousedown", function(event) {
             event.preventDefault();
         });
     }
@@ -116,7 +116,7 @@
         floatingDiv.style.display = "none";
     }
 
-    document.getElementById("tambahLahanButton").addEventListener("click", function () {
+    document.getElementById("tambahLahanButton").addEventListener("click", function() {
         var formLahan = document.getElementById("formLahan");
         if (formLahan.style.display === "none" || formLahan.style.display === "") {
             formLahan.style.display = "block";
@@ -139,12 +139,12 @@
         };
 
         fetch('/create-lahan', {
-            method: 'POST',
-            body: JSON.stringify(data),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
             .catch(error => {
                 console.error('Error:', error);
             });
@@ -187,7 +187,7 @@
                 cell.setAttribute('data-height', cell.clientHeight + 'px');
                 cell.setAttribute('data-row', i);
                 cell.setAttribute('data-col', j);
-                cell.addEventListener("click", function () {
+                cell.addEventListener("click", function() {
                     this.style.backgroundColor = activeColor;
                     this.style.width = cellWidth;
                     this.style.height = cellHeight;
@@ -206,7 +206,7 @@
     }
 
     function updateTabel(data, idlahan, counter) {
-        data.forEach(function (item) {
+        data.forEach(function(item) {
             var data_col = item.data_col;
             var data_row = item.data_row;
             var warna = item.warna;
@@ -236,13 +236,21 @@
         });
     }
 
-    document.getElementById("UbahLahanButton").addEventListener("click", function () {
+    document.getElementById("UbahLahanButton").addEventListener("click", function() {
         var formUbah = document.getElementById("formUbah");
         if (formUbah.style.display === "none" || formUbah.style.display === "") {
             formUbah.style.display = "block";
             document.getElementById("formLahan").style.display = "none";
         } else {
             formUbah.style.display = "none";
+        }
+    });
+    document.getElementById('Infotools').addEventListener('click', function() {
+        var getInfo = document.getElementById("getinfo");
+        if (getInfo.style.display === "none" || getInfo.style.display === "") {
+            getInfo.style.display = "block"; // atau "inline-block" tergantung pada kebutuhan Anda
+        } else {
+            getInfo.style.display = "none";
         }
     });
 
@@ -263,17 +271,17 @@
             ejumlahKolom > 10) {
             alert("Harap masukkan nilai yang valid untuk baris (maksimum 6) dan kolom (maksimum 10)");
         } else if (confirm(
-            "Tindakan ini akan mengatur ulang semua data dari Lahan yang dipilih. Apakah Anda ingin melanjutkan?"
-        )) {
+                "Tindakan ini akan mengatur ulang semua data dari Lahan yang dipilih. Apakah Anda ingin melanjutkan?"
+            )) {
             location.reload();
             fetch('/update-lahan', {
-                method: 'POST',
-                body: JSON.stringify(data),
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
-            })
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                })
                 .then(response => {
                     if (response.ok) {
                         return response.json();
@@ -317,7 +325,7 @@
         sessionStorage.setItem('contentState', `content${cardCounter}`);
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const savedState = sessionStorage.getItem('contentState');
 
         if (savedState) {
@@ -410,27 +418,27 @@
     }
 
     var cardElements = document.querySelectorAll('.card.mb-3');
-    cardElements.forEach(function (cardElement) {
-        cardElement.addEventListener('click', function (event) {
+    cardElements.forEach(function(cardElement) {
+        cardElement.addEventListener('click', function(event) {
             event.stopPropagation();
         });
     });
 
-    document.addEventListener('click', function (event) {
+    document.addEventListener('click', function(event) {
         var cardElement = event.target.closest('.card.mb-3');
         if (!cardElement) {
             resetZoom(cardCounter);
         }
     });
 
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         calculateTotalWeight();
     });
 
     function calculateTotalWeight() {
         var elements = document.querySelectorAll('[data-lahan-id][data-user-id]');
 
-        elements.forEach(function (element) {
+        elements.forEach(function(element) {
             var lahanId = element.getAttribute('data-lahan-id');
             var userId = element.getAttribute('data-user-id');
 
@@ -453,12 +461,12 @@
             const queryParams = `idlahan=${idlahan}&cardCounter=${cardCounter}`;
 
             fetch(`${url}?${queryParams}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                },
-            })
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                })
                 .then(response => response.json())
                 .then(data => {
                     console.log(data);
@@ -498,10 +506,11 @@
         }
     }
 
-    document.addEventListener('click', function (event) {
+    document.addEventListener('click', function(event) {
         var hapusButton = document.getElementById("hapusButton");
 
-        if (!hapusButton.contains(event.target) && !event.target.classList.contains('cell') && !event.target.classList.contains('selected-cell')) {
+        if (!hapusButton.contains(event.target) && !event.target.classList.contains('cell') && !event.target
+            .classList.contains('selected-cell')) {
             hapusButton.style.backgroundColor = "";
             isClearingEnabled = false;
         }
@@ -525,12 +534,12 @@
             ).join('&');
 
             fetch(`${url}?${queryParams}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                },
-            })
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                })
 
                 .then(response => response.json())
                 .then(data => {
@@ -558,10 +567,11 @@
         }
     }
 
-    document.addEventListener('click', function (event) {
+    document.addEventListener('click', function(event) {
         var markButton = document.getElementById("markButton");
 
-        if (!markButton.contains(event.target) && !event.target.classList.contains('cell') && !event.target.classList.contains('selected-cell')) {
+        if (!markButton.contains(event.target) && !event.target.classList.contains('cell') && !event.target
+            .classList.contains('selected-cell')) {
             markActionPicker.style.display = 'none';
             markButton.style.backgroundColor = "";
             isActionMark = false;
@@ -583,15 +593,15 @@
             console.log('Selected Cells Data:', selectedCellsData);
 
             fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                },
-                body: JSON.stringify({
-                    selectedCells: selectedCellsData
-                }),
-            })
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: JSON.stringify({
+                        selectedCells: selectedCellsData
+                    }),
+                })
 
                 .then(response => response.json())
                 .then(data => {
@@ -622,11 +632,12 @@
         }
     }
 
-    document.addEventListener('click', function (event) {
+    document.addEventListener('click', function(event) {
         var catatanButton = document.getElementById("catatanButton");
         var floatingDiv = document.getElementById("floatingDiv");
 
-        if (!catatanButton.contains(event.target) && !event.target.classList.contains('cell') && !event.target.classList.contains('selected-cell') && !floatingDiv.contains(event.target)) {
+        if (!catatanButton.contains(event.target) && !event.target.classList.contains('cell') && !event.target
+            .classList.contains('selected-cell') && !floatingDiv.contains(event.target)) {
             weightPicker.style.display = 'none';
             catatanButton.style.backgroundColor = "";
             isNotes = false;
@@ -648,15 +659,15 @@
             console.log('Selected Cells Data:', selectedCellsData);
 
             fetch('/update-berat', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                },
-                body: JSON.stringify({
-                    selectedCells: selectedCellsData
-                }),
-            })
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: JSON.stringify({
+                        selectedCells: selectedCellsData
+                    }),
+                })
                 .then(response => response.json())
                 .then(response => {
                     console.log(response);
@@ -678,13 +689,16 @@
         }
 
         fetch('/checkActionTimer', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            },
-            body: JSON.stringify({ lahan_id: lahanId, iduser: userId })
-        })
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+                body: JSON.stringify({
+                    lahan_id: lahanId,
+                    iduser: userId
+                })
+            })
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -700,7 +714,8 @@
                 };
 
                 if (responseData.exists) {
-                    var confirmation = confirm('Waktu sudah diterapkan pada lahan. Apakah Anda ingin memperbarui waktu');
+                    var confirmation = confirm(
+                        'Waktu sudah diterapkan pada lahan. Apakah Anda ingin memperbarui waktu');
                     if (!confirmation) {
                         return;
                     }
@@ -747,12 +762,12 @@
         }
 
         fetch('/delete-timer/' + lahanId + '/' + userId, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            },
-        })
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+            })
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -768,14 +783,14 @@
             });
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         updateTimersFromDatabase();
     });
 
     function updateTimersFromDatabase() {
         var elements = document.querySelectorAll('[data-timer-id][user-id]');
 
-        elements.forEach(function (element) {
+        elements.forEach(function(element) {
             var lahanId = element.getAttribute('data-timer-id');
             var userId = element.getAttribute('user-id');
 
@@ -790,7 +805,7 @@
                         var deleteButton = document.createElement('i');
                         deleteButton.className = 'fas fa-trash';
                         deleteButton.style.cursor = 'pointer';
-                        deleteButton.addEventListener('click', function () {
+                        deleteButton.addEventListener('click', function() {
                             deleteTimer(lahanId, userId);
                         });
 
