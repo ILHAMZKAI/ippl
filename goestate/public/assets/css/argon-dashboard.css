@@ -2458,8 +2458,8 @@ progress {
   cursor: move;
   display: none;
   position: fixed;
-  top: 30%;
-  left: 70%;
+  top: 50%;
+  left: 50%;
   z-index: 10000;
 }
 
@@ -3743,6 +3743,11 @@ textarea.form-control.is-invalid {
     transition: none;
   }
 }
+.button-container {
+    padding: 5px; /* Sesuaikan dengan ukuran padding yang Anda inginkan */
+    border-radius: 5px; /* Menambahkan sudut melengkung pada border */
+}
+
 
 .btn:hover {
   color: #67748e;
@@ -5263,6 +5268,19 @@ fieldset:disabled .btn {
   transition: box-shadow 0.15s ease-in-out;
 }
 
+.navbar-toggler1 {
+  font-size: 1.125rem;
+  border: none;
+  background-color: transparent;
+  transition: box-shadow 0.15s ease-in-out;
+}
+
+    .col-11 {
+        margin-left: 40px; /* Sesuaikan nilai margin sesuai kebutuhan */
+    }
+.navbar-toggler-icon .fa {
+  color: #5d5e60;
+ }
 @media (prefers-reduced-motion: reduce) {
   .navbar-toggler {
     transition: none;

@@ -24,26 +24,33 @@
 <body class="{{ $class ?? '' }}">
 
     @guest
-    @yield('content')
+        @yield('content')
     @endguest
 
     @auth
-    @if (in_array(request()->route()->getName(), ['sign-in-static', 'sign-up-static', 'login', 'register', 'recover-password', 'rtl', 'virtual-reality']))
-    @yield('content')
-    @else
-    @if (!in_array(request()->route()->getName(), ['profile', 'profile-static']))
-    <div class="height-600 bg-primary position-absolute w-100" style="background-image: url('/img/bg102.jpg'); background-size: 100%; background-position-y: 80%;"></div>
-    @elseif (in_array(request()->route()->getName(), ['profile-static', 'profile']))
-    <div class="position-absolute w-100 min-height-500 top-0" style="background-image: url('/img/bg100.jpg'); background-size: 100%; background-position-y: 35%;">
-        <span class="mask bg-primary opacity-3"></span>
-    </div>
-    @endif
-    @include('layouts.navbars.auth.sidenav')
-    <main class="main-content border-radius-lg">
-        @yield('content')
-    </main>
-    @include('components.fixed-plugin')
-    @endif
+        @if (in_array(request()->route()->getName(),
+                ['sign-in-static', 'sign-up-static', 'login', 'register', 'recover-password', 'rtl', 'virtual-reality']))
+            @yield('content')
+        @else
+            @if (
+                !in_array(request()->route()->getName(),
+                    ['profile', 'profile-static']))
+                <div class="height-600 bg-primary position-absolute w-100"
+                    style="background-image: url('/img/bg102.jpg'); background-size: 100%; background-position-y: 80%;">
+                </div>
+            @elseif (in_array(request()->route()->getName(),
+                    ['profile-static', 'profile']))
+                <div class="position-absolute w-100 min-height-500 top-0"
+                    style="background-image: url('/img/bg100.jpg'); background-size: 100%; background-position-y: 35%;">
+                    <span class="mask bg-primary opacity-3"></span>
+                </div>
+            @endif
+            @include('layouts.navbars.auth.sidenav')
+            <main class="main-content border-radius-lg">
+                @yield('content')
+            </main>
+            @include('components.fixed-plugin')
+        @endif
     @endauth
 
     <!--   Core JS Files   -->
