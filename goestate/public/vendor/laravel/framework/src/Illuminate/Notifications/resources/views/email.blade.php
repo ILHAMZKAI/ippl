@@ -1,62 +1,52 @@
-@component('mail::message')
-{{-- Greeting --}}
-@if (! empty($greeting))
-# {{ $greeting }}
-@else
-@if ($level === 'error')
-# @lang('Whoops!')
-@else
-# @lang('Hello!')
-@endif
-@endif
+<!DOCTYPE html>
+<html lang="en">
 
-{{-- Intro Lines --}}
-@foreach ($introLines as $line)
-{{ $line }}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Template</title>
+</head>
 
-@endforeach
+<body>
+    <table
+        style="width: 100%; max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; color:rgb(46, 46, 46); border-collapse: collapse;">
+        <tr>
+            <td style="padding: 20px; text-align: center; background-color: #2bc842;">
+                <h2>Welcome to GoEstate</h2>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 20px; text-align: left;">
+                <p>Hello!</p>
+                <p>Terima kasih telah bergabung dengan GoEstate. Kami sangat senang Anda bergabung sebagai bagian dari
+                    kami.</p>
+                <p>Klik tombol dibawah untuk memverifikasi email anda!</p>
+            </td>
+            @isset($actionText)
+            <?php
+                $color = match ($level) {
+                    'success', 'error' => $level,
+                    default => 'success',
+                };
+                ?>
+            <x-mail::button :url="$actionUrl" :color="$color">
+                {{ $actionText }}
+            </x-mail::button>
+            @endisset
+        </tr>
+        @isset($actionText)
+        @lang('Klik link dibawah jika tombol diatas tidak berfungsi:')<br>
+        <a href="{{ $actionUrl }}"
+            style="display: inline-block; padding: 10px; color: rgb(87, 156, 252); text-decoration: none;">{{
+            $displayableActionUrl }}</a>
+        @endisset
+        <tr>
+            <td style="padding: 20px; text-align: center; background-color: #2bc842;">
+                <p>&copy; 2023 GoEstate. All rights reserved.</p>
+            </td>
+        </tr>
+    </table>
+</body>
 
-{{-- Action Button --}}
-@isset($actionText)
-<?php
-    switch ($level) {
-        case 'success':
-        case 'error':
-            $color = $level;
-            break;
-        default:
-            $color = 'primary';
-    }
-?>
-@component('mail::button', ['url' => $actionUrl, 'color' => $color])
-{{ $actionText }}
-@endcomponent
-@endisset
-
-{{-- Outro Lines --}}
-@foreach ($outroLines as $line)
-{{ $line }}
-
-@endforeach
-
-{{-- Salutation --}}
-@if (! empty($salutation))
-{{ $salutation }}
-@else
-@lang('Regards'),<br>
-{{ config('app.name') }}
-@endif
-
-{{-- Subcopy --}}
-@isset($actionText)
-@slot('subcopy')
-@lang(
-    "If you're having trouble clicking the \":actionText\" button, copy and paste the URL below\n".
-    'into your web browser:',
-    [
-        'actionText' => $actionText,
-    ]
-) <span class="break-all">[{{ $displayableActionUrl }}]({{ $actionUrl }})</span>
-@endslot
-@endisset
-@endcomponent
+</html>
