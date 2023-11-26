@@ -7,8 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\user;
 
-class HomeController extends Controller
-{
+class HomeController extends Controller {
     /**
      * Create a new controller instance.
      *
@@ -25,10 +24,9 @@ class HomeController extends Controller
      * @return \Illuminate\View\View
      */
 
-    public function index(DashboardChart $chart)
-    {
+    public function index(DashboardChart $chart) {
         $usertype = Auth::user()->usertype;
-        if ($usertype == '1') {
+        if($usertype == '1') {
             $users = User::select('id', 'username', 'firstname', 'email', 'address')->get();
             return view('admin.home', ['users' => $users]);
 

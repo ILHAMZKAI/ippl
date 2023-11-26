@@ -4,25 +4,24 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Models\Lahan;
+use App\Models\Mark;
+use App\Models\Timer;
 use Illuminate\Http\Request;
 
-class LahanController extends Controller
-{
-    public function index()
-    {
+class LahanController extends Controller {
+    public function index() {
         $userId = auth()->id();
         $lahanData = Lahan::where('user_id', $userId)->get();
 
         return view('/pages/garden-management', compact('lahanData'));
     }
-    public function create(Request $request)
-    {
+    public function create(Request $request) {
         $namaLahan = $request->input('namaLahan');
         $jumlahBaris = $request->input('jumlahBaris');
         $jumlahKolom = $request->input('jumlahKolom');
         $userId = auth()->id();
 
-        if (
+        if(
             !is_numeric($jumlahBaris) || !is_numeric($jumlahKolom) ||
             $jumlahBaris <= 0 || $jumlahKolom <= 0 || $jumlahBaris > 6 || $jumlahKolom > 10
         ) {
@@ -38,15 +37,14 @@ class LahanController extends Controller
 
         return redirect('/garden-management')->with('success', 'Lahan berhasil dibuat');
     }
-    public function delete($id)
-    {
+    public function delete($id) {
         $userId = auth()->id();
 
         $lahan = Lahan::where('id', $id)
             ->where('user_id', $userId)
             ->first();
 
-        if (!$lahan) {
+        if(!$lahan) {
             return redirect('/garden-management')->with('error', 'Data lahan tidak ditemukan atau Anda tidak memiliki akses ke data lahan ini');
         }
 
@@ -55,8 +53,7 @@ class LahanController extends Controller
         return redirect('/garden-management')->with('success', 'Data lahan berhasil dihapus');
     }
 
-    public function updateLahan(Request $request)
-    {
+    public function updateLahan(Request $request) {
         $request->validate([
             'idLahan' => 'required',
             'namaLahan' => 'required',
@@ -66,12 +63,16 @@ class LahanController extends Controller
 
         $user = Auth::user();
 
-        if ($user) {
+        if($user) {
             $lahan = Lahan::where('user_id', $user->id)
                 ->where('id', $request->input('idLahan'))
                 ->first();
 
-            if ($lahan) {
+            if($lahan) {
+                Mark::where('idlahan', $request->input('idLahan'))->delete();
+
+                Timer::where('lahan_id', $request->input('idLahan'))->delete();
+
                 $lahan->update([
                     'nama' => $request->input('namaLahan'),
                     'jumlah_baris' => $request->input('jumlahBaris'),

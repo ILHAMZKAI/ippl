@@ -8,10 +8,20 @@
             <div class="p-6 m-20 mt-2 mb-n1 bg-white rounded shadow">
                 <div class="mb-4">
                     <button class="btn btn-success me-2"
-                        onclick="window.location='{{ route('dashboard', ['sortBy' => 'id', 'sortOrder' => 'asc']) }}'">Sort
+                        onclick="window.location='{{ route('dashboard', ['sortBy' => 'id', 'sortOrder' => 'asc']) }}'">ID
+                        Sort
                         Asc</button>
-                    <button class="btn btn-success"
-                        onclick="window.location='{{ route('dashboard', ['sortBy' => 'id', 'sortOrder' => 'desc']) }}'">Sort
+                    <button class="btn btn-success me-2"
+                        onclick="window.location='{{ route('dashboard', ['sortBy' => 'id', 'sortOrder' => 'desc']) }}'">ID
+                        Sort
+                        Desc</button>
+                    <button class="btn btn-success me-2"
+                        onclick="window.location='{{ route('dashboard', ['sortBy' => 'berat', 'sortOrder' => 'asc']) }}'">Weight
+                        Sort
+                        Asc</button>
+                    <button class="btn btn-success me-2"
+                        onclick="window.location='{{ route('dashboard', ['sortBy' => 'berat', 'sortOrder' => 'desc']) }}'">
+                        Weight Sort
                         Desc</button>
                     {!! $chart->container() !!}
                 </div>
