@@ -5275,9 +5275,6 @@ fieldset:disabled .btn {
   transition: box-shadow 0.15s ease-in-out;
 }
 
-    .col-11 {
-        margin-left: 40px; /* Sesuaikan nilai margin sesuai kebutuhan */
-    }
 .navbar-toggler-icon .fa {
   color: #5d5e60;
  }
@@ -9985,7 +9982,7 @@ fieldset:disabled .btn {
 }
 
 .ms-n2 {
-  margin-left: -0.5rem !important;
+  margin-left: -0.80rem !important;
 }
 
 .ms-n3 {
