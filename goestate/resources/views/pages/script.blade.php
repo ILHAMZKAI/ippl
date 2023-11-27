@@ -282,13 +282,11 @@
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
             })
-                .then(data => {
-                    console.log('Response:', data);
-                    if (data.success) {
-                        alert(data.success);
-                        window.location.reload(true);
-                    } else if (data.error) {
-                        alert(data.error);
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Error');
                     }
                 })
                 .then(data => {

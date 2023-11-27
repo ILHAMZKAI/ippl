@@ -149,7 +149,7 @@
                         <input type="number" class="form-control" id="EinputKolom" placeholder="Masukkan jumlah kolom"
                             required>
                     </div>
-                    <button type="button" class="btn btn-primary" onclick="ubahLahan()">Perbarui</button>
+                    <button type="submit" class="btn btn-primary" onclick="ubahLahan()">Perbarui</button>
                 </form>
             </div>
         </div>
